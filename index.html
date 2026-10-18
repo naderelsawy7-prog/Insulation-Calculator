@@ -1,0 +1,1981 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#122238">
+<title>Thermal Insulation Evaluation Calculator</title>
+<style>
+
+:root {
+  --navy-dark: #0f172a;
+  --navy-mid: #1e293b;
+  --navy-light: #334155;
+  --blue-primary: #1d4ed8;
+  --blue-hover: #1e40af;
+  --blue-soft: #eff6ff;
+  --blue-border: #bfdbfe;
+  --teal-accent: #0d9488;
+  --emerald: #059669;
+  --emerald-soft: #ecfdf5;
+  --amber: #d97706;
+  --amber-soft: #fffbeb;
+  --rose: #dc2626;
+  --rose-soft: #fef2f2;
+  --bg-page: #f8fafc;
+  --card-bg: #ffffff;
+  --border-light: #e2e8f0;
+  --border-mid: #cbd5e1;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-subtle: #94a3b8;
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.07);
+  --shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.09);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg-page);
+  color: var(--text-main);
+  font: 14.5px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+
+/* HEADER & NAVBAR */
+.app-header {
+  background: linear-gradient(135deg, #091221 0%, #0f1e36 40%, #173359 85%, #1e4273 100%);
+  color: #ffffff;
+  padding: 18px clamp(16px, 4vw, 48px) 26px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(9, 18, 33, 0.25);
+}
+.nav {
+  max-width: 1440px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.brand-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #2563eb, #06b6d4);
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+.brand-title {
+  font-size: 15px;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+.brand-sub {
+  font-size: 12px;
+  color: #93c5fd;
+  margin-top: 2px;
+  font-weight: 500;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.privacy-pill, .source-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #dbeafe;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 11.5px;
+  font-weight: 650;
+  backdrop-filter: blur(8px);
+}
+.source-pill { color: #a7f3d0; background: rgba(5, 150, 105, 0.18); border-color: rgba(5, 150, 105, 0.35); }
+
+.hero {
+  max-width: 1440px;
+  margin: 22px auto 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.hero h1 {
+  font-size: clamp(24px, 3.5vw, 36px);
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin: 0 0 8px;
+  color: #ffffff;
+  font-weight: 800;
+}
+.hero p {
+  margin: 0;
+  color: #cbd5e1;
+  max-width: 760px;
+  font-size: 14px;
+}
+.hero-stat {
+  text-align: right;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 10px 18px;
+  min-width: 150px;
+}
+.hero-stat strong {
+  display: block;
+  font-size: 28px;
+  line-height: 1;
+  color: #60a5fa;
+  font-weight: 850;
+}
+.hero-stat span {
+  font-size: 11.5px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+/* MAIN LAYOUT */
+main {
+  max-width: 1440px;
+  padding: 0 clamp(16px, 3vw, 40px) 64px;
+  margin: auto;
+}
+
+/* STEPPER */
+.stepper {
+  display: flex;
+  gap: 10px;
+  margin: 22px 0 20px;
+  overflow-x: auto;
+  padding: 4px;
+  background: #f1f5f9;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+.step {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 18px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 9px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+.step b {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 800;
+}
+.step:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+.step.active {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #1d4ed8;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+.step.active b {
+  background: #1d4ed8;
+  color: #ffffff;
+}
+.step.done {
+  color: #047857;
+}
+.step.done b {
+  background: #059669;
+  color: #ffffff;
+}
+
+/* CARDS & PANELS */
+.panel {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.panel:hover {
+  border-color: var(--border-mid);
+}
+
+/* ASSUMPTIONS PANEL */
+.assumptions {
+  margin-bottom: 20px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+.assumptions summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  cursor: pointer;
+  font-weight: 750;
+  color: #1e293b;
+  background: #f8fafc;
+}
+.assumptions summary::-webkit-details-marker { display: none; }
+.assumptions summary .summary-right { font-size: 12px; color: #64748b; font-weight: 600; }
+.chevron { color: #64748b; transition: transform 0.2s; }
+.assumptions[open] .chevron { transform: rotate(180deg); }
+.assumption-content {
+  border-top: 1px solid #e2e8f0;
+  padding: 18px 20px;
+  background: #ffffff;
+}
+.assumptions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+}
+.setting label, .field label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #334155;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+.unit { color: #64748b; font-weight: 500; font-size: 11px; }
+.setting input, .field input, .field select, .field textarea {
+  width: 100%;
+  border: 1px solid var(--border-mid);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 9px 12px;
+  color: var(--text-main);
+  outline: 0;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.setting input { height: 38px; font-size: 13.5px; }
+.field input, .field select { height: 42px; font-size: 14px; }
+.field textarea { min-height: 76px; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus, .setting input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+.setting .hint, .field .hint { color: #64748b; font-size: 11px; margin-top: 4px; }
+.assumptions-note {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  color: #475569;
+  font-size: 12px;
+  border-left: 3px solid #2563eb;
+}
+
+/* EXCEL IMPORT BOX */
+.excel-import-card {
+  padding: 20px 24px;
+  margin-bottom: 22px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+.excel-import-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.excel-badge-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.excel-icon-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #107c41;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 20px;
+  box-shadow: 0 4px 10px rgba(16, 124, 65, 0.28);
+}
+.excel-import-header h2 {
+  margin: 0;
+  font-size: 16.5px;
+  color: #0f172a;
+  font-weight: 800;
+}
+.excel-import-header p {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: #475569;
+}
+.excel-drop-zone {
+  border: 2px dashed #94a3b8;
+  border-radius: 10px;
+  padding: 20px 24px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  transition: all 0.2s ease;
+}
+.excel-drop-zone:hover {
+  border-color: #2563eb;
+  background: #f0f7ff;
+}
+.excel-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.btn-excel-upload {
+  background: #107c41;
+  color: #ffffff;
+  border: 1px solid #0e6c38;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 13.5px;
+  font-weight: 750;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 3px 8px rgba(16, 124, 65, 0.25);
+  transition: all 0.15s ease;
+}
+.btn-excel-upload:hover {
+  background: #0e6c38;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(16, 124, 65, 0.35);
+}
+.btn-excel-template {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 13.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: all 0.15s ease;
+}
+.btn-excel-template:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+.import-status {
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: #475569;
+}
+.import-status.success { color: #047857; font-weight: 700; }
+.import-status.error { color: #b91c1c; font-weight: 700; }
+.import-preview {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+.import-preview[hidden] { display: none; }
+
+/* WORK GRID & FORM */
+.work-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(300px, 0.85fr);
+  gap: 22px;
+  align-items: start;
+}
+.form-panel {
+  padding: 24px 28px;
+  border-radius: 14px;
+}
+.section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 18px;
+}
+.section-head h2 {
+  font-size: 18.5px;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: #0f172a;
+  font-weight: 800;
+}
+.section-head p { margin: 4px 0 0; color: #64748b; font-size: 13px; }
+.form-section { margin-top: 20px; }
+.form-section:first-of-type { margin-top: 0; }
+.form-section h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #1e40af;
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+}
+.form-section h3:after { content: ""; height: 1px; background: #e2e8f0; flex: 1; }
+.fields {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px 12px;
+}
+.field { min-width: 0; }
+.field.span2 { grid-column: span 2; }
+.field.span4 { grid-column: 1 / -1; }
+.error-box {
+  display: none;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border: 1px solid #fecdd3;
+  background: #fff1f2;
+  border-radius: 10px;
+  color: #be123c;
+  font-size: 13px;
+}
+.error-box.show { display: block; }
+.error-box ul { margin: 6px 0 0; padding-left: 18px; }
+
+/* BUTTONS */
+.btn {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 9.5px 16px;
+  font-size: 13px;
+  font-weight: 750;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn-primary {
+  background: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(29, 78, 216, 0.25);
+}
+.btn-primary:hover { background: #1e40af; }
+.btn-secondary {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+.btn-secondary:hover { background: #dbeafe; }
+.btn-outline {
+  background: #ffffff;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+.btn-outline:hover { background: #f8fafc; border-color: #94a3b8; }
+.btn-finish {
+  background: #059669;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+.btn-finish:hover { background: #047857; }
+.btn-danger {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecdd3;
+}
+.btn-danger:hover { background: #fee2e2; }
+.btn-sm { padding: 6px 11px; font-size: 12px; }
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 24px;
+  padding-top: 18px;
+}
+
+/* LIVE PREVIEW PANEL */
+.live-panel {
+  position: sticky;
+  top: 18px;
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+}
+.live-head {
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #0f172a, #1e3a8a);
+  color: #ffffff;
+}
+.live-head small {
+  display: block;
+  color: #93c5fd;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 10px;
+}
+.live-head h3 { margin: 4px 0 0; font-size: 16.5px; color: #ffffff; }
+.live-body { padding: 18px 20px; background: #ffffff; }
+.live-verdict {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  margin-bottom: 14px;
+}
+.live-verdict.urgent, .badge.urgent { background: #fee2e2; color: #991b1b; }
+.live-verdict.caution, .badge.caution { background: #fef3c7; color: #92400e; }
+.live-verdict.good, .badge.good { background: #dcfce7; color: #166534; }
+.live-verdict.info, .badge.info { background: #e0f2fe; color: #075985; }
+.live-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.mini-metric {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #f8fafc;
+}
+.mini-metric span { display: block; color: #64748b; font-size: 11px; font-weight: 650; }
+.mini-metric strong {
+  display: block;
+  font-size: 17px;
+  margin-top: 4px;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mini-metric.emphasis { background: #ecfdf5; border-color: #a7f3d0; }
+.mini-metric.emphasis strong { color: #047857; }
+
+/* QUEUE TABLE */
+.queue-panel { margin-top: 24px; padding: 22px 24px; border-radius: 14px; }
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+}
+.data-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 780px;
+  font-size: 12.5px;
+}
+.data-table th {
+  background: #f1f5f9;
+  color: #334155;
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 10px 12px;
+  border-bottom: 1px solid #cbd5e1;
+  font-weight: 750;
+}
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: middle;
+}
+.data-table tbody tr:hover { background: #f8fafc; }
+
+/* SUMMARY VIEW */
+.summary-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin: 14px 0 20px;
+  flex-wrap: wrap;
+}
+.summary-top h2 { font-size: 24px; letter-spacing: -0.02em; margin: 0; color: #0f172a; font-weight: 850; }
+.summary-top p { color: #64748b; margin: 4px 0 0; font-size: 13.5px; }
+
+/* ISO 12241 REPORT STYLES */
+.iso-report-container {
+  margin-top: 20px;
+  background: #ffffff;
+  border: 2px solid #0f172a;
+  border-radius: 4px;
+  padding: 30px 36px;
+  color: #0f172a;
+  box-shadow: 0 10px 32px rgba(15, 23, 42, 0.08);
+}
+.iso-header-box {
+  display: grid;
+  grid-template-columns: 210px 1fr 190px;
+  border: 2px solid #0f172a;
+  margin-bottom: 22px;
+  background: #ffffff;
+}
+.iso-col-left {
+  border-right: 2px solid #0f172a;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: #f8fafc;
+}
+.iso-logo-badge {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #0f172a;
+  border: 2px solid #0f172a;
+  padding: 2px 14px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+.iso-standard-title { font-size: 11px; line-height: 1.3; color: #334155; text-transform: uppercase; }
+.iso-standard-title strong { font-size: 13px; color: #0f172a; display: block; }
+.iso-col-center {
+  padding: 14px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 2px solid #0f172a;
+}
+.iso-doc-type {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #1d4ed8;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.iso-report-h1 {
+  font-size: 21px;
+  margin: 3px 0 6px;
+  color: #0f172a;
+  font-weight: 850;
+  letter-spacing: -0.02em;
+}
+.iso-facility { font-size: 13px; color: #475569; font-weight: 600; }
+.iso-col-right {
+  padding: 10px 12px;
+  font-size: 10.5px;
+  display: flex;
+  align-items: center;
+  background: #f8fafc;
+}
+.iso-meta-mini-table { width: 100%; border-collapse: collapse; }
+.iso-meta-mini-table th { text-align: left; color: #475569; padding: 3px 4px; font-size: 10px; text-transform: uppercase; }
+.iso-meta-mini-table td { text-align: right; font-weight: 750; color: #0f172a; padding: 3px 4px; font-size: 10px; }
+.iso-section-title {
+  background: #0f172a;
+  color: #ffffff;
+  padding: 7px 12px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 20px 0 10px;
+  border-radius: 2px;
+}
+.iso-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  margin-bottom: 16px;
+  border: 1px solid #94a3b8;
+}
+.iso-table th {
+  background: #f1f5f9;
+  border: 1px solid #94a3b8;
+  padding: 7px 10px;
+  text-align: left;
+  font-weight: 750;
+  color: #0f172a;
+  font-size: 11px;
+}
+.iso-table td {
+  border: 1px solid #cbd5e1;
+  padding: 7px 10px;
+  color: #1e293b;
+  font-size: 11.5px;
+}
+.iso-control-table td.iso-lbl {
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 750;
+}
+.iso-val-highlight {
+  font-weight: 800;
+  color: #1d4ed8;
+  background: #eff6ff;
+}
+.iso-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.iso-kpi-card {
+  border: 1px solid #94a3b8;
+  border-radius: 4px;
+  padding: 12px 14px;
+  background: #f8fafc;
+}
+.iso-kpi-card span {
+  display: block;
+  font-size: 10px;
+  font-weight: 750;
+  text-transform: uppercase;
+  color: #475569;
+  letter-spacing: 0.04em;
+}
+.iso-kpi-card strong {
+  display: block;
+  font-size: 19px;
+  margin-top: 4px;
+  color: #0f172a;
+}
+.iso-kpi-card small {
+  display: block;
+  font-size: 9.5px;
+  color: #64748b;
+  margin-top: 3px;
+}
+.iso-kpi-card.highlight {
+  border-left: 4px solid #059669;
+  background: #ecfdf5;
+}
+.iso-kpi-card.highlight strong { color: #047857; }
+.iso-declaration-box {
+  border: 1px solid #94a3b8;
+  background: #f8fafc;
+  padding: 12px 16px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #334155;
+  margin-bottom: 18px;
+  border-radius: 2px;
+}
+.iso-declaration-box p { margin: 4px 0; }
+.iso-signoff-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 14px;
+}
+.iso-sign-box {
+  border: 1px solid #94a3b8;
+  background: #ffffff;
+  padding: 12px 16px;
+  font-size: 11.5px;
+  border-radius: 2px;
+}
+.iso-sign-role {
+  font-weight: 800;
+  color: #0f172a;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 4px;
+}
+.iso-sign-name {
+  font-weight: 750;
+  color: #0f172a;
+  font-size: 12px;
+  margin-bottom: 16px;
+}
+.iso-sign-line { font-size: 10.5px; color: #64748b; margin-bottom: 6px; }
+.iso-sign-date { font-size: 10.5px; color: #475569; font-weight: 600; }
+
+.toast {
+  position: fixed;
+  z-index: 50;
+  right: 24px;
+  bottom: 24px;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 12px 18px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.25);
+  font-size: 13.5px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: all 0.25s ease;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+  
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    font-size: 9.5px !important;
+  }
+  
+  /* HIDE ALL WEBSITE CONTENT, MENUS, FORMS, HEADERS & FOOTERS */
+  header, nav, .app-header, .nav, .hero, .stepper, .assumptions,
+  #entryView, .report-meta-panel, .summary-top, .summary-actions,
+  .summary-cards, .summary-grid, .method-details, footer, .footer,
+  .toast, .modal-shell, .warning-banner, .import-panel, .excel-import-card,
+  #queuePanel, .work-grid, .form-panel, .live-panel, .iso-toolbar,
+  .report-print-head {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  
+  main {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+  }
+  
+  #summaryView {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+  
+  /* HIDE EVERYTHING IN summaryView EXCEPT isoReportContainer */
+  #summaryView > *:not(#isoReportContainer) {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  
+  /* EXCLUSIVELY DISPLAY THE ISO REPORT CONTAINER */
+  #isoReportContainer {
+    display: block !important;
+    visibility: visible !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 2px solid #000000 !important;
+    box-shadow: none !important;
+    page-break-after: avoid;
+  }
+  
+  .iso-header-box {
+    display: grid !important;
+    grid-template-columns: 200px 1fr 180px !important;
+    border: 2px solid #000000 !important;
+    page-break-inside: avoid !important;
+    background: #ffffff !important;
+  }
+  .iso-col-left, .iso-col-center, .iso-col-right {
+    border-color: #000000 !important;
+    background: #ffffff !important;
+  }
+  .iso-logo-badge {
+    border: 2px solid #000000 !important;
+    color: #000000 !important;
+  }
+  .iso-section-title {
+    background: #0f172a !important;
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    page-break-after: avoid !important;
+  }
+  .iso-table {
+    width: 100% !important;
+    border: 1px solid #000000 !important;
+    page-break-inside: auto !important;
+  }
+  .iso-table th {
+    background: #f1f5f9 !important;
+    border: 1px solid #475569 !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .iso-table td {
+    border: 1px solid #94a3b8 !important;
+    color: #000000 !important;
+  }
+  .iso-kpi-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8px !important;
+    page-break-inside: avoid !important;
+  }
+  .iso-kpi-card {
+    border: 1px solid #000000 !important;
+    background: #ffffff !important;
+    padding: 8px 10px !important;
+  }
+  .iso-declaration-box {
+    border: 1px solid #000000 !important;
+    background: #ffffff !important;
+    page-break-inside: avoid !important;
+  }
+  .iso-signoff-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+    page-break-inside: avoid !important;
+  }
+  .iso-sign-box {
+    border: 1px solid #000000 !important;
+    background: #ffffff !important;
+    page-break-inside: avoid !important;
+  }
+  .iso-results-table tr {
+    page-break-inside: avoid !important;
+  }
+}
+
+
+.work-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin-bottom: 24px;
+}
+.live-panel {
+  position: static !important;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+.live-head {
+  padding: 14px 22px;
+  background: linear-gradient(135deg, #0f172a, #1e3a8a);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.live-head small {
+  display: block;
+  color: #93c5fd;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 10px;
+}
+.live-head h3 { margin: 3px 0 0; font-size: 16.5px; color: #ffffff; font-weight: 800; }
+.live-body { padding: 18px 22px; background: #ffffff; }
+.live-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.mini-metric {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 11px 14px;
+  background: #f8fafc;
+}
+.mini-metric span {
+  display: block;
+  color: #64748b;
+  font-size: 10.5px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.mini-metric strong {
+  display: block;
+  font-size: 18px;
+  margin-top: 4px;
+  color: #0f172a;
+  font-weight: 850;
+}
+.mini-metric.emphasis {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+}
+.mini-metric.emphasis strong {
+  color: #047857;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(190px, 1fr));
+  gap: 16px 14px;
+}
+.field label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #334155;
+  font-weight: 700;
+  margin-bottom: 6px;
+  white-space: nowrap;
+}
+.field input, .field select {
+  width: 100%;
+  height: 42px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13.5px;
+  background: #ffffff;
+  color: #0f172a;
+}
+@media (max-width: 1100px) {
+  .fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .fields {
+    grid-template-columns: 1fr;
+  }
+  .field.span2 {
+    grid-column: span 1;
+  }
+}
+
+</style>
+</head>
+<body>
+<header class="app-header">
+  <div class="nav">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">∿</div>
+      <div><div class="brand-title">Engineering calculator</div><div class="brand-sub">Thermal insulation evaluation</div></div>
+    </div>
+    <div class="nav-right"><span class="source-pill">Engineering screening</span><span class="privacy-pill">● No server upload</span><button class="btn btn-sm" id="newAssessmentBtn" type="button" style="background:#ffffff; color:#122238; border:1px solid #cbd5e1; font-weight:800; display:inline-flex; align-items:center; gap:6px; cursor:pointer; padding:7px 12px; box-shadow:0 2px 6px rgba(0,0,0,0.12); transition:transform .12s, box-shadow .12s;"><span>🔄</span> New assessment</button></div>
+  </div>
+  <div class="hero">
+    <div><h1>Insulation evaluation</h1><p>Enter equipment one item at a time, review the live heat-loss and financial screen, then finish to view the portfolio summary.</p></div>
+    <div class="hero-stat"><strong id="heroCount">0</strong><span>items in this assessment</span></div>
+  </div>
+</header>
+<main>
+  <div class="stepper" aria-label="Assessment progress"><button class="step active" id="step1" type="button" style="cursor:pointer; border:none;"><b>1</b> Equipment inputs</button><button class="step" id="step2" type="button" style="cursor:pointer; border:none;"><b>2</b> Review items (<span id="step2Count">0</span>)</button><button class="step" id="step3" type="button" style="cursor:pointer; border:none;"><b>3</b> 📄 Generate ISO Report</button></div>
+  <details class="assumptions panel" id="assumptionsPanel" open>
+    <summary><span>Model &amp; financial assumptions</span><span class="summary-right">Editable screening assumptions <span class="chevron">⌄</span></span></summary>
+    <div class="assumption-content">
+      <div class="assumptions-grid">
+        <div class="setting"><label for="residualPct">Residual heat loss <span class="unit">% of current</span></label><input id="residualPct" type="number" min="0" max="100" step="1" value="30"><div class="hint">Default: 30% remains after action (70% savings)</div></div>
+        <div class="setting"><label for="capexRate">Insulation CAPEX rate <span class="unit">$/m²</span></label><input id="capexRate" type="number" min="0" step="1" value="150"><div class="hint">Editable area-based screening estimate</div></div>
+        <div class="setting"><label for="lifeYears">Project life <span class="unit">years</span></label><input id="lifeYears" type="number" min="1" max="50" step="1" value="5"><div class="hint">5-year initial assumption</div></div>
+        <div class="setting"><label for="discountPct">Discount rate <span class="unit">%/year</span></label><input id="discountPct" type="number" min="0" max="100" step="0.1" value="0"><div class="hint">0% reproduces an undiscounted screen</div></div>
+        <div class="setting"><label for="carbonPrice">Shadow carbon price <span class="unit">$/tCO₂e</span></label><input id="carbonPrice" type="number" min="0" step="1" value="50"><div class="hint">Internal value only; not revenue</div></div>
+        <div class="setting"><label for="emissionFactor">Gas emission factor <span class="unit">kg/kWh fuel</span></label><input id="emissionFactor" type="number" min="0" step="0.001" value="0.181"><div class="hint">Confirm factor source and year</div></div>
+      </div>
+      <div class="assumptions-note"><strong>Important:</strong> These defaults are assumptions, not confirmed project inputs. Update them before using results. The calculator keeps energy economics separate from the optional carbon-inclusive valuation.</div>
+    </div>
+  </details>
+  <div class="warning-banner"><span aria-hidden="true">⚠</span><div><strong>Screening tool, not a design approval.</strong> The heat-loss and fuel-cost method is for hot service. Validate field temperatures, geometry, material properties, and operating cases. Safety flags are screening prompts—not personnel exposure limits or a substitute for Operations approval, MOC, or competent engineering review.</div></div>
+
+  <section class="view" id="entryView">
+    
+    <!-- PROJECT & REPORTER SETUP CARD -->
+    <section class="panel" style="padding:16px 20px; margin-bottom:18px; background:#fff; border:1px solid #cfdae7; border-left:4px solid #2563eb; box-shadow:0 6px 20px rgba(25,47,76,0.04);">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:12px; flex-wrap:wrap;">
+        <div>
+          <h2 style="margin:0; font-size:16px; color:#122238; font-weight:800; display:flex; align-items:center; gap:8px;">
+            <span style="font-size:18px;">📋</span> Project &amp; Reporter Setup
+          </h2>
+          <p style="margin:3px 0 0; color:#64748b; font-size:12px;">These credentials will be integrated directly into your official ISO 12241 Evaluation Report.</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:11px; background:#eff6ff; color:#1d4ed8; padding:5px 12px; border-radius:999px; font-weight:750; border:1px solid #bfdbfe;">
+            Standard: ISO 12241:2022
+          </span>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px;">
+        <div>
+          <label for="setupProject" style="display:block; font-size:11px; font-weight:750; color:#334155; margin-bottom:5px;">Project Name <span style="color:#dc2626;">*</span></label>
+          <input id="setupProject" type="text" placeholder="e.g. AQP Concession Insulation Evaluation" value="Thermal Insulation Assessment" style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:8px; padding:8px 11px; font-size:13px; font-weight:600; color:#0f172a;">
+        </div>
+        <div>
+          <label for="setupReporter" style="display:block; font-size:11px; font-weight:750; color:#334155; margin-bottom:5px;">Reporter (Prepared by) <span style="color:#dc2626;">*</span></label>
+          <input id="setupReporter" type="text" placeholder="e.g. Eng. Nader Elsawy (Lead Engineer)" style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:8px; padding:8px 11px; font-size:13px; font-weight:600; color:#0f172a;">
+        </div>
+        <div>
+          <label for="setupSite" style="display:block; font-size:11px; font-weight:750; color:#334155; margin-bottom:5px;">Site / Process Facility Unit</label>
+          <input id="setupSite" type="text" placeholder="e.g. NA/Q P-I Platform &amp; El-Meadia Plant" style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:8px; padding:8px 11px; font-size:13px; color:#0f172a;">
+        </div>
+        <div>
+          <label for="setupDocRef" style="display:block; font-size:11px; font-weight:750; color:#334155; margin-bottom:5px;">Document Ref / Report ID</label>
+          <input id="setupDocRef" type="text" value="ISO-12241-TIR-001" style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:8px; padding:8px 11px; font-size:13px; color:#0f172a;">
+        </div>
+      </div>
+    </section>
+
+    
+    <!-- EXCEL BATCH IMPORT MODULE -->
+    <section class="excel-import-card" aria-labelledby="excelImportHeading">
+      <div class="excel-import-header">
+        <div class="excel-badge-title">
+          <div class="excel-icon-box" aria-hidden="true">X</div>
+          <div>
+            <h2 id="excelImportHeading">Batch Input Equipment from Excel (.xlsx)</h2>
+            <p>Upload your completed equipment schedule or download the blank pre-formatted Excel template.</p>
+          </div>
+        </div>
+        <div>
+          <span style="font-size:11.5px; background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; padding:5px 12px; border-radius:999px; font-weight:750;">
+            ● 100% Client-Side Local Import (No Upload to Cloud)
+          </span>
+        </div>
+      </div>
+
+      <div class="excel-drop-zone">
+        <div style="display:flex; align-items:center; gap:16px;">
+          <div style="font-size:32px; color:#107c41;">📁</div>
+          <div>
+            <div style="font-weight:800; font-size:14px; color:#0f172a;">Ready to input your Excel file</div>
+            <div style="font-size:12px; color:#64748b;">Supports standardized .xlsx files with equipment tags, dimensions, temperatures &amp; fuel costs</div>
+          </div>
+        </div>
+        <div class="excel-actions">
+          <input class="visually-hidden" id="excelFileInput" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+          <a class="btn btn-excel-template" href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQAAAAIAEhKS11Gx01IlQAAAM0AAAAQAAAAZG9jUHJvcHMvYXBwLnhtbE3PTQvCMAwG4L9SdreZih6kDkQ9ip68zy51hbYpbYT67+0EP255ecgboi6JIia2mEXxLuRtMzLHDUDWI/o+y8qhiqHke64x3YGMsRoPpB8eA8OibdeAhTEMOMzit7Dp1C5GZ3XPlkJ3sjpRJsPiWDQ6sScfq9wcChDneiU+ixNLOZcrBf+LU8sVU57mym/8ZAW/B7oXUEsDBBQAAAAIAEhKS11YOOXpRgEAAC0DAAARAAAAZG9jUHJvcHMvY29yZS54bWzNk9FKwzAUhl8l9L5Ls8HQ0BV0KggKggXFu5iedXFpGpNTOt/eNHYdQ29252Vz/nz/l4Tm0nLZOnhyrQWHCjzZN9p4Lu0q2SJaTqmXW2iEn4WECcNN6xqB4dPV1Aq5EzXQeZYtaQMoKoGCDsDUTsSkyCvJpQOBrRvxlZzwtnM6wipJQUMDBj1lM0aT4tbUygA4ZWqyFlp2ekDk9IiLaFSo4SxwuYVwCE3ujR+YqjXkynvwfgiFVdshKaGxYQaxLlbEMt+9f4DEs+qutTA7Ap+dsrFAxQIcC0i4USIIjk7q6CRPzzxWDxoYsv7nEqCaXOLqn0JxQpMxufdqSvV9P+sXMRdekdHXx4fn+OBpEEFhJIRdXnH8srBKDs0vi/VNeZcU82y+TFmWMlZml5xdcLZ8G1xP/I7CTVupjfrHxgfBIqe//oziG1BLAwQUAAAACABISktdmVycIxAGAACcJwAAEwAAAHhsL3RoZW1lL3RoZW1lMS54bWztWltz2jgUfu+v0Hhn9m0LxjaBtrQTc2l227SZhO1OH4URWI1seWSRhH+/RzYQy5YN7ZJNups8BCzp+85FR+foOHnz7i5i6IaIlPJ4YNkv29a7ty/e4FcyJBFBMBmnr/DACqVMXrVaaQDDOH3JExLD3IKLCEt4FMvWXOBbGi8j1uq0291WhGlsoRhHZGB9XixoQNBUUVpvXyC05R8z+BXLVI1lowETV0EmuYi08vlsxfza3j5lz+k6HTKBbjAbWCB/zm+n5E5aiOFUwsTAamc/VmvH0dJIgILJfZQFukn2o9MVCDINOzqdWM52fPbE7Z+Mytp0NG0a4OPxeDi2y9KLcBwE4FG7nsKd9Gy/pEEJtKNp0GTY9tqukaaqjVNP0/d93+ubaJwKjVtP02t33dOOicat0HgNvvFPh8Ouicar0HTraSYn/a5rpOkWaEJG4+t6EhW15UDTIABYcHbWzNIDll4p+nWUGtkdu91BXPBY7jmJEf7GxQTWadIZljRGcp2QBQ4AN8TRTFB8r0G2iuDCktJckNbPKbVQGgiayIH1R4Ihxdyv/fWXu8mkM3qdfTrOa5R/aasBp+27m8+T/HPo5J+nk9dNQs5wvCwJ8fsjW2GHJ247E3I6HGdCfM/29pGlJTLP7/kK6048Zx9WlrBdz8/knoxyI7vd9lh99k9HbiPXqcCzIteURiRFn8gtuuQROLVJDTITPwidhphqUBwCpAkxlqGG+LTGrBHgE323vgjI342I96tvmj1XoVhJ2oT4EEYa4pxz5nPRbPsHpUbR9lW83KOXWBUBlxjfNKo1LMXWeJXA8a2cPB0TEs2UCwZBhpckJhKpOX5NSBP+K6Xa/pzTQPCULyT6SpGPabMjp3QmzegzGsFGrxt1h2jSPHr+BfmcNQockRsdAmcbs0YhhGm78B6vJI6arcIRK0I+Yhk2GnK1FoG2camEYFoSxtF4TtK0EfxZrDWTPmDI7M2Rdc7WkQ4Rkl43Qj5izouQEb8ehjhKmu2icVgE/Z5ew0nB6ILLZv24fobVM2wsjvdH1BdK5A8mpz/pMjQHo5pZCb2EVmqfqoc0PqgeMgoF8bkePuV6eAo3lsa8UK6CewH/0do3wqv4gsA5fy59z6XvufQ9odK3NyN9Z8HTi1veRm5bxPuuMdrXNC4oY1dyzcjHVK+TKdg5n8Ds/Wg+nvHt+tkkhK+aWS0jFpBLgbNBJLj8i8rwKsQJ6GRbJQnLVNNlN4oSnkIbbulT9UqV1+WvuSi4PFvk6a+hdD4sz/k8X+e0zQszQ7dyS+q2lL61JjhK9LHMcE4eyww7ZzySHbZ3oB01+/ZdduQjpTBTl0O4GkK+A226ndw6OJ6YkbkK01KQb8P56cV4GuI52QS5fZhXbefY0dH758FRsKPvPJYdx4jyoiHuoYaYz8NDh3l7X5hnlcZQNBRtbKwkLEa3YLjX8SwU4GRgLaAHg69RAvJSVWAxW8YDK5CifEyMRehw55dcX+PRkuPbpmW1bq8pdxltIlI5wmmYE2eryt5lscFVHc9VW/Kwvmo9tBVOz/5ZrcifDBFOFgsSSGOUF6ZKovMZU77nK0nEVTi/RTO2EpcYvOPmx3FOU7gSdrYPAjK5uzmpemUxZ6by3y0MCSxbiFkS4k1d7dXnm5yueiJ2+pd3wWDy/XDJRw/lO+df9F1Drn723eP6bpM7SEycecURAXRFAiOVHAYWFzLkUO6SkAYTAc2UyUTwAoJkphyAmPoLvfIMuSkVzq0+OX9FLIOGTl7SJRIUirAMBSEXcuPv75Nqd4zX+iyBbYRUMmTVF8pDicE9M3JD2FQl867aJguF2+JUzbsaviZgS8N6bp0tJ//bXtQ9tBc9RvOjmeAes4dzm3q4wkWs/1jWHvky3zlw2zreA17mEyxDpH7BfYqKgBGrYr66r0/5JZw7tHvxgSCb/NbbpPbd4Ax81KtapWQrET9LB3wfkgZjjFv0NF+PFGKtprGtxtoxDHmAWPMMoWY434dFmhoz1YusOY0Kb0HVQOU/29QNaPYNNByRBV4xmbY2o+ROCjzc/u8NsMLEjuHti78BUEsDBBQAAAAIAEhKS11pj1DpfisAABGeAQAYAAAAeGwvd29ya3NoZWV0cy9zaGVldDEueG1s7Z1tcxzXeW3/yhR97XKqYpHzPkNLqpLYaPXpPq8iFVc+jsAhgRKAgYGhaOXXpwFiZrpbZy/z6oN1q64/JJG4sB9uzMah7FWJ8+XH3d1P9xfb7X70j+urm/uvnl3s97cvnz+/P7/YXm/uv9jdbm9a8m53d73Zt3979/75/e3ddvP2MXR99Xzy4sXi+fXm8ubZ118+/lq8+/rL/ebHV7ur3d3o7v2PXz178WIyX0zPvn32/Osvdx/2V5c323g3uv9wfb25++Xb7dXu41fPxs8Ov/D95fuL/cMvtF99u3m/fb3d/3Dbfv27y/2bXWx/4Yk9P/5uby+vtzf3l7ub0d323VfPvhm/TJMXs4evefyS/7rcfrzv/PXo/mL38bu7y7e2LdJ+xy+ejf5nt7t+fb65am+v2r99+FB+3O1+evhq8/bhKx6q3GxHv7y+vbpsy82ejfa7W7t9t3+1vbpqf8v5s9HmfH/58za2X/bVsx93+/3u+oG339Z+s29/6d3d7n+2N4+ltlfb9mvbure/+uJPR56OPnwmf3/6lk7f8UOp7l8fvrXycaL2g/pxc79tP/2/Xb7dX7Tfz7PR2+27zYer/fe7j9X26cOdP9w7313dP/730cdPXzuZPBudf7hv2zyF2wbXlzef/ufmH08ffCcwnYnA5CkwGQQmCxGYPgWmg8B4JQKzp8DscwPzp8B8GFCVFk+BxfB7UJ/S8imw/NzfYfUUWH3u77B+CqyHgRdquBeH5V4MI3MVOY49XHsyVZHD3ONf7b1WkcPg4+HiEzXg+DD5eLi5/vYPo4+Hq0/GKnKYfTzcfSZ/l8Pw48fln396V4+PstjsN19/ebf7OLp7/PqHx3d6NMfn2P75cv7wFY9P/vEL21+9vHn4k/L1/q6ll+3B/ddvqrPv3Td2ZPzrH+w3b0zwo29evz57/dqd+TejP/1hNRlP/trS+MOb0ZszF9uvOfvy+b6t9JB/ft7+V1vl2Gfyqc/pJ+HXfSaPfSaiz9nNfns32rV/MG7//uHytv1TeD+63G+vR7ftL7e/yX8+/OF3t7+8eT96+MO5/V3nX4xe7a5vr7b77Wh/sW3/wG6Dd9u37Z/u26u396PNzdvRh/vt6O3d7vbt7uPN/ejjxfZuO7q92/18+Xb79gv4dqZPH+9EfzvTx29nit/O9t27y/PL7c35L6NNW+jhezlvv7H2HzyjP7f/GBxt/7F5+Ab+c7Saj663m7biav7H//hi9ENb+2K3/8v99u7ny/Pt6PLm9sO+7X+5v3iof769vx+1n017brP/0H5Lf3q//2v7z7y7d5v2i38FNtc/Xj58nB3wxchuNz+3n832tj3549Xm5qfRh5urx7vtR3l/sbltf9f79jM9329u3n+42tzRxzX79HHNVvrjmj1+XDP1caUfTHz8yTNF//d5TH/L6fh9eNX+5I6Ks9evvjfx4Yc5c+TV51Z489/xLJMvPq/Ew2MZ/flPfxgvF3999R+ZO2d85xv3rXls8c/ulHwnxLPv23ftvxsV3/z360z+O86XP5zZ0XffvB7F782rs9Gf/89z575980OuSfVPPtmyNK/a7+nVf4/+/Mdc3nC+80eUmKb+7AOv33zz5ofcp9F8fofKvGr8w9R/vrw5v8h9Q/afTPPDm7PvR69/+L78pv1k/+nQ7nN/cAvzjTt7OP189DdTvKl0Qf+5J+2Z/6499HxUnZnvqjejP1/nzoXPbngWH2plj8TPPfK6+ib7U5D4gA9vzl7DH2Lz459V88c788c7D/9e5PTn0Cey+DV5JTPFJ7L8NTmTpPxEVr8m38lMJYmR3WpJGnnNSuIk8ZIESaLslnIr9KZcHKdcPH7pOjPlJ/LwL2p/taUMFU+hcWZMjconNMnMqVOVRkYWrCVp9DmrkdPIaxQ0irJgyg7Sm3V5nHUpX+hSvlCZKZbyhUpSLuULlZlKEiO71ZI08pqVxEniJQmSRNkt5VboTbk6TrmSL3SlX6gMFSv9QjUqV/qF6lSlkZEFa0kafc5q5DTyGgWNoiyYsoP0Zl0fZ13LF7qWL1RmirV8oZKUa/lCZaaSxMhutSSNvGYlcZJ4SYIkUXZLuRV6U45fnEzCC/lGn1D2kepYcYjlnimw8sByDxVyFTCja9YaNXDRAnPAPLAALOqaKb9Pf+iOMhrLV/uEcs9Wp4onlHu4GpVPKPd0darSyOiGtUaNPmg1chp5jYJGUTdM2VH6405O4070K57AK5ax4hDLvmLNygPLvmKdq4AZXbPWqIGLFpgD5oEFYFHXTPl9+kNPT0NP9Sue6lcsU8UTyr5iiconlH3FMlVpZHTDWqNGH7QaOY28RkGjqBum7Cj9cWencWf6Fc/gFctYcYhlX7Fm5YFlX7HOVcCMrllr1MBFC8wB88ACsKhrpvw+/aFPEmqsLdRYayidKsZaRGlUjrWK0qlKI6Mb1ho1+qDVyGnkNQoaRd0wZUfpj3vSUmPtpcYgpnSsGIOaAlaOQU5BrgJmdM1aowYuWmAOmAcWgEVdM+X36Q99ElVjbarGWlXpVDHWskqjcqx1lU5VGhndsNao0QetRk4jr1HQKOqGKTtKf9yTuhprdzUGeaVjxRj0FbByDAILchUwo2vWGjVw0QJzwDywACzqmim/T3/ok8waa5s11jpLp4qxFloalWOttHSq0sjohrVGjT5oNXIaeY2CRlE3TNlR+v/7Kie7NdF2awJ2S8eKCdgtYOUE7BbkKmBG16w1auCiBeaAeWABWNQ1U36f/tCd/wUkbbcm2m7pVDHRdkujcqLtlk5VGhndsNao0QetRk4jr1HQKOqGKTtKf9yT3ZpouzUBu6VjxQTsFrByAnYLchUwo2vWGjVw0QJzwDywACzqmim/T3/ok92aaLs10XZLp4qJtlsalRNtt3Sq0sjohrVGjT5oNXIaeY2CRlE3TNlR+uOe7NZE260J2C0dKyZgt4CVE7BbkKuAGV2z1qiBixaYA+aBBWBR10z5ffpDn+zWRNutibZbOlVMtN3SqJxou6VTlUZGN6w1avRBq5HTyGsUNIq6YcqO0h/3ZLcm2m5NwG7pWDEBuwWsnIDdglwFzOiatUYNXLTAHDAPLACLumbK79Mf+mS3JtpuTbTd0qliou2WRuVE2y2dqjQyumGtUaMPWo2cRl6joFHUDVN2lP64J7s10XZrAnZLx4oJ2C1g5QTsFuQqYEbXrDVq4KIF5oB5YAFY1DVTfp/+0Ce7NdF2a6Ltlk4VE223NCon2m7pVKWR0Q1rjRp90GrkNPIaBY2ibpiyo/T/z5dOdmuq7dYU7JaOFVOwW8DKKdgtyFXAjK5Za9TARQvMAfPAArCoa6b8Pv2hO//3aNpuTbXd0qliqu2WRuVU2y2dqjQyumGtUaMPWo2cRl6joFHUDVN2lP64J7s11XZrCnZLx4op2C1g5RTsFuQqYEbXrDVq4KIF5oB5YAFY1DVTfp/+0Ce7NdV2a6rtlk4VU223NCqn2m7pVKWR0Q1rjRp90GrkNPIaBY2ibpiyo/THPdmtqbZbU7BbOlZMwW4BK6dgtyBXATO6Zq1RAxctMAfMAwvAoq6Z8vv0hz7Zram2W1Ntt3SqmGq7pVE51XZLpyqNjG5Ya9Tog1Yjp5HXKGgUdcOUHaU/7sluTbXdmoLd0rFiCnYLWDkFuwW5CpjRNWuNGrhogTlgHlgAFnXNlN+nP/TJbk213Zpqu6VTxVTbLY3KqbZbOlVpZHTDWqNGH7QaOY28RkGjqBum7Cj9cU92a6rt1hTslo4VU7BbwMop2C3IVcCMrllr1MBFC8wB88ACsKhrpvw+/aFPdmuq7dZU2y2dKqbabmlUTrXd0qlKI6Mb1ho1+qDVyGnkNQoaRd0wZUfp/6fNnOzWTNutGdgtHStmYLeAlTOwW5CrgBlds9aogYsWmAPmgQVgUddM+X36Q3f+44O03Zppu6VTxUzbLY3KmbZbOlVpZHTDWqNGH7QaOY28RkGjqBum7Cj9cU92a6bt1gzslo4VM7BbwMoZ2C3IVcCMrllr1MBFC8wB88ACsKhrpvw+/aFPdmum7dZM2y2dKmbabmlUzrTd0qlKI6Mb1ho1+qDVyGnkNQoaRd0wZUfpj3uyWzNtt2Zgt3SsmIHdAlbOwG5BrgJmdM1aowYuWmAOmAcWgEVdM+X36Q99slszbbdm2m7pVDHTdkujcqbtlk5VGhndsNao0QetRk4jr1HQKOqGKTtKf9yT3ZppuzUDu6VjxQzsFrByBnYLchUwo2vWGjVw0QJzwDywACzqmim/T3/ok92aabs103ZLp4qZtlsalTNtt3Sq0sjohrVGjT5oNXIaeY2CRlE3TNlR+uOe7NZM260Z2C0dK2Zgt4CVM7BbkKuAGV2z1qiBixaYA+aBBWBR10z5ffpDn+zWTNutmbZbOlXMtN3SqJxpu6VTlUZGN6w1avRBq5HTyGsUNIq6YcqO0v+PIT3Zrbm2W3OwWzpWzMFuASvnYLcgVwEzumatUQMXLTAHzAMLwKKumfL79Ic+2a25tltzbbd0qphru6VROdd2S6cqjYxuWGvU6INWI6eR1yhoFHXDlB2lP+7Jbs213ZqD3dKxYg52C1g5B7sFuQqY0TVrjRq4aIE5YB5YABZ1zZTfpz/0yW7Ntd2aa7ulU8Vc2y2Nyrm2WzpVaWR0w1qjRh+0GjmNvEZBo6gbpuwo/XFPdmuu7dYc7JaOFXOwW8DKOdgtyFXAjK5Za9TARQvMAfPAArCoa6b8Pv2hO//h79puzbXd0qliru2WRuVc2y2dqjQyumGtUaMPWo2cRl6joFHUDVN2lP64J7s113ZrDnZLx4o52C1g5RzsFuQqYEbXrDVq4KIF5oB5YAFY1DVTfp/+0Ce7Ndd2a67tlk4Vc223NCrn2m7pVKWR0Q1rjRp90GrkNPIaBY2ibpiyo/THPdmtubZbc7BbOlbMwW4BK+dgtyBXATO6Zq1RAxctMAfMAwvAoq6Z8vv0hz7Zrbm2W3Ntt3SqmGu7pVE513ZLpyqNjG5Ya9Tog1Yjp5HXKGgUdcOUHaX//5nlZLcW2m4twG7pWLEAuwWsXIDdglwFzOiatUYNXLTAHDAPLACLumbK79Mf+mS3FtpuLbTd0qlioe2WRuVC2y2dqjQyumGtUaMPWo2cRl6joFHUDVN2lP64J7u10HZrAXZLx4oF2C1g5QLsFuQqYEbXrDVq4KIF5oB5YAFY1DVTfp/+0Ce7tdB2a6Htlk4VC223NCoX2m7pVKWR0Q1rjRp90GrkNPIaBY2ibpiyo/THPdmthbZbC7BbOlYswG4BKxdgtyBXATO6Zq1RAxctMAfMAwvAoq6Z8vv0hz7ZrYW2Wwttt3SqWGi7pVG50HZLpyqNjG5Ya9Tog1Yjp5HXKGgUdcOUHaU/buf/2aG2WwuwWzpWLMBuASsXYLcgVwEzumatUQMXLTAHzAMLwKKumfL79Ic+2a2FtlsLbbd0qlhou6VRudB2S6cqjYxuWGvU6INWI6eR1yhoFHXDlB2lP+7Jbi203VqA3dKxYgF2C1i5ALsFuQqY0TVrjRq4aIE5YB5YABZ1zZTfpz/0yW4ttN1aaLulU8VC2y2NyoW2WzpVaWR0w1qjRh+0GjmNvEZBo6gbpuwo/f8HtSe7tdR2awl2S8eKJdgtYOUS7BbkKmBG16w1auCiBeaAeWABWNQ1U36f/tAnu7XUdmup7ZZOFUtttzQql9pu6VSlkdENa40afdBq5DTyGgWNom6YsqP0xz3ZraW2W0uwWzpWLMFuASuXYLcgVwEzumatUQMXLTAHzAMLwKKumfL79Ic+2a2ltltLbbd0qlhqu6VRudR2S6cqjYxuWGvU6INWI6eR1yhoFHXDlB2lP+7Jbi213VqC3dKxYgl2C1i5BLsFuQqY0TVrjRq4aIE5YB5YABZ1zZTfpz/0yW4ttd1aarulU8VS2y2NyqW2WzpVaWR0w1qjRh+0GjmNvEZBo6gbpuwo/XFPdmup7dYS7JaOFUuwW8DKJdgtyFXAjK5Za9TARQvMAfPAArCoa6b8Pv2hT3Zrqe3WUtstnSqW2m5pVC613dKpSiOjG9YaNfqg1chp5DUKGkXdMGVH6Y97sltLbbeWYLd0rFiC3QJWLsFuQa4CZnTNWqMGLlpgDpgHFoBFXTPl9+kPfbJbS223ltpu6VSx1HZLo3Kp7ZZOVRoZ3bDWqNEHrUZOI69R0Cjqhik7Sm/c1clurbTdWoHd0rFiBXYLWLkCuwW5CpjRNWuNGrhogTlgHlgAFnXNlN+nP/TJbq203Vppu6VTxUrbLY3KlbZbOlVpZHTDWqNGH7QaOY28RkGjqBum7Cj9cU92a6Xt1grslo4VK7BbwMoV2C3IVcCMrllr1MBFC8wB88ACsKhrpvw+/aFPdmul7dZK2y2dKlbabmlUrrTd0qlKI6Mb1ho1+qDVyGnkNQoaRd0wZUfpj3uyWyttt1Zgt3SsWIHdAlauwG5BrgJmdM1aowYuWmAOmAcWgEVdM+X36Q99slsrbbdW2m7pVLHSdkujcqXtlk5VGhndsNao0QetRk4jr1HQKOqGKTtKf9yT3Vppu7UCu6VjxQrsFrByBXYLchUwo2vWGjVw0QJzwDywACzqmim/T3/ok91aabu10nZLp4qVtlsalSttt3Sq0sjohrVGjT5oNXIaeY2CRlE3TNlR+uOe7NZK260V2C0dK1Zgt4CVK7BbkKuAGV2z1qiBixaYA+aBBWBR10z5ffpDn+zWStutlbZbOlWstN3SqFxpu6VTlUZGN6w1avRBq5HTyGsUNIq6YcqO0ht3fbJba2231mC3dKxYg90CVq7BbkGuAmZ0zVqjBi5aYA6YBxaARV0z5ffpD32yW2ttt9babulUsdZ2S6Nyre2WTlUaGd2w1qjRB61GTiOvUdAo6oYpO0p/3JPdWmu7tQa7pWPFGuwWsHINdgtyFTCja9YaNXDRAnPAPLAALOqaKb9Pf+iT3Vpru7XWdkunirW2WxqVa223dKrSyOiGtUaNPmg1chp5jYJGUTdM2VH6457s1lrbrTXYLR0r1mC3gJVrsFuQq4AZXbPWqIGLFpgD5oEFYFHXTPl9+kOf7NZa2621tls6Vay13dKoXGu7pVOVRkY3rDVq9EGrkdPIaxQ0irphyo7SH/dkt9babq3BbulYsQa7Baxcg92CXAXM6Jq1Rg1ctMAcMA8sAIu6Zsrv0x/6ZLfW2m6ttd3SqWKt7ZZG5VrbLZ2qNDK6Ya1Row9ajZxGXqOgUdQNU3aU/rgnu7XWdmsNdkvHijXYLWDlGuwW5CpgRtesNWrgogXmgHlgAVjUNVN+n/7QJ7u11nZrre2WThVrbbc0KtfabulUpZHRDWuNGn3QauQ08hoFjaJumLKj9MYdvzjprYe/Vu/4wLIPGYLFMZh7ygTLI8w9ZkpWBA2UrYE1dNQSdAQ9wUAwQtkk5hpMP+5Mr43XgeWeNuSKA8s9bmDlgeWeN+QqYAZ61sAauGmBOWAeWAAWoWfKbzSYe9KZWzuwAxMvXVuwYzD/0sGDHWH+pYMJI2igbA2soaOWoCPoCQaCEcomMddg+mlnem3FDiz/0rUXO7D8S9dm7MDyL127MWAGetbAGrhpgTlgHlgAFqFnym80mHvWmVt7sgMTL12bsmMw/9LBlR1h/qWDLSNooGwNrKGjlqAj6AkGghHKJjHXYPp5Z3ptzg4s/9K1Ozuw/EvX9uzA8i9d+zNgBnrWwBq4aYE5YB5YABahZ8pvNJh70Zlbu7QDEy9d27RjMP/SwacdYf6lg1EjaKBsDayho5agI+gJBoIRyiYx12D6ZWd6bdcOLP/StV87sPxL14btwPIvXTs2YAZ61sAauGmBOWAeWAAWoWfKbzSYe9WZW/u2AxMvXRu3YzD/0sG5HWH+pYN1I2igbA2soaOWoCPoCQaCEcomMddg+nVnem3gDiz/0rWDO7D8S9cW7sDyL117OGAGetbAGrhpgTlgHlgAFqFnym/Un3vcMXJjMHJjMnI6WByD2ZcOsDzC7EuHZEXQQNkaWENHLUFH0BMMBCOUTWKuwfQdIzcGIzcGI6dzxYFlX7pm5YFlX7rOVcAM9KyBNXDTAnPAPLAALELPlN9oMHfHyI3ByI3JyOlgcQzmXzoZuTEZOUhWBA2UrYE1dNQSdAQ9wUAwQtkk5hpM3zFyYzByYzByOlccWP6lg5Ebg5HTuQqYgZ41sAZuWmAOmAcWgEXomfIbDebuGLkxGLkxGTkdLI7B/EsnIzcmIwfJiqCBsjWwho5ago6gJxgIRiibxFyD6TtGbgxGbgxGTueKA8u/dDByYzByOlcBM9CzBtbATQvMAfPAArAIPVN+o8HcHSM3BiM3JiOng8UxmH/pZOTGZOQgWRE0ULYG1tBRS9AR9AQDwQhlk5hrMH3HyI3ByI3ByOlccWD5lw5GbgxGTucqYAZ61sAauGmBOWAeWAAWoWfKbzSYu2PkxmDkxmTkdLA4BvMvnYzcmIwcJCuCBsrWwBo6agk6gp5gIBihbBJzDabvGLkxGLkxGDmdKw4s/9LByI3ByOlcBcxAzxpYAzctMAfMAwvAIvRM+Y36c086Rm4CRm5CRk4Hi2Mw+9IBlkeYfemQrAgaKFsDa+ioJegIeoKBYISyScw1mL5j5CZg5CZg5HSuOLDsS9esPLDsS9e5CpiBnjWwBm5aYA6YBxaAReiZ8hsN5u4YuQkYuQkZOR0sjsH8SycjNyEjB8mKoIGyNbCGjlqCjqAnGAhGKJvEXIPpO0ZuAkZuAkZO54oDy790MHITMHI6VwEz0LMG1sBNC8wB88ACsAg9U36jwdwdIzcBIzchI6eDxTGYf+lk5CZk5CBZETRQtgbW0FFL0BH0BAPBCGWTmGswfcfITcDITcDI6VxxYPmXDkZuAkZO5ypgBnrWwBq4aYE5YB5YABahZ8pvNJi7Y+QmYOQmZOR0sDgG8y+djNyEjBwkK4IGytbAGjpqCTqCnmAgGKFsEnMNpu8YuQkYuQkYOZ0rDiz/0sHITcDI6VwFzEDPGlgDNy0wB8wDC8Ai9Ez5jQZzd4zcBIzchIycDhbHYP6lk5GbkJGDZEXQQNkaWENHLUFH0BMMBCOUTWKuwfQdIzcBIzcBI6dzxYHlXzoYuQkYOZ2rgBnoWQNr4KYF5oB5YAFYhJ4pv1F/7mnHyE3ByE3JyOlgcQxmXzrA8gizLx2SFUEDZWtgDR21BB1BTzAQjFA2ibkG03eM3BSM3BSMnM4VB5Z96ZqVB5Z96TpXATPQswbWwE0LzAHzwAKwCD1TfqPB3B0jNwUjNyUjp4PFMZh/6WTkpmTkIFkRNFC2BtbQUUvQEfQEA8EIZZOYazB9x8hNwchNwcjpXHFg+ZcORm4KRk7nKmAGetbAGrhpgTlgHlgAFqFnym80mLtj5KZg5KZk5HSwOAbzL52M3JSMHCQrggbK1sAaOmoJOoKeYCAYoWwScw2m7xi5KRi5KRg5nSsOLP/SwchNwcjpXAXMQM8aWAM3LTAHzAMLwCL0TPmNBnN3jNwUjNyUjJwOFsdg/qWTkZuSkYNkRdBA2RpYQ0ctQUfQEwwEI5RNYq7B9B0jNwUjNwUjp3PFgeVfOhi5KRg5nauAGehZA2vgpgXmgHlgAViEnim/0WDujpGbgpGbkpHTweIYzL90MnJTMnKQrAgaKFsDa+ioJegIeoKBYISyScw1mL5j5KZg5KZg5HSuOLD8SwcjNwUjp3MVMAM9a2AN3LTAHDAPLACL0DPlN+rPPesYuRkYuRkZOR0sjsHsSwdYHmH2pUOyImigbA2soaOWoCPoCQaCEcomMddg+o6Rm4GRm4GR07niwLIvXbPywLIvXecqYAZ61sAauGmBOWAeWAAWoWfKbzSYu2PkZmDkZmTkdLA4BvMvnYzcjIwcJCuCBsrWwBo6agk6gp5gIBihbBJzDabvGLkZGLkZGDmdKw4s/9LByM3AyOlcBcxAzxpYAzctMAfMAwvAIvRM+Y0Gc3eM3AyM3IyMnA4Wx2D+pZORm5GRg2RF0EDZGlhDRy1BR9ATDAQjlE1irsH0HSM3AyM3AyOnc8WB5V86GLkZGDmdq4AZ6FkDa+CmBeaAeWABWISeKb/RYO6OkZuBkZuRkdPB4hjMv3QycjMycpCsCBooWwNr6Kgl6Ah6goFghLJJzDWYvmPkZmDkZmDkdK44sPxLByM3AyOncxUwAz1rYA3ctMAcMA8sAIvQM+U3GszdMXIzMHIzMnI6WByD+ZdORm5GRg6SFUEDZWtgDR21BB1BTzAQjFA2ibkG03eM3AyM3AyMnM4VB5Z/6WDkZmDkdK4CZqBnDayBmxaYA+aBBWAReqb8Rv255x0jNwcjNycjp4PFMZh96QDLI8y+dEhWBA2UrYE1dNQSdAQ9wUAwQtkk5hpM3zFyczByczByOlccWPala1YeWPal61wFzEDPGlgDNy0wB8wDC8Ai9Ez5jQZzd4zcHIzcnIycDhbHYP6lk5Gbk5GDZEXQQNkaWENHLUFH0BMMBCOUTWKuwfQdIzcHIzcHI6dzxYHlXzoYuTkYOZ2rgBnoWQNr4KYF5oB5YAFYhJ4pv9Fg7o6Rm4ORm5OR08HiGMy/dDJyczJykKwIGihbA2voqCXoCHqCgWCEsknMNZi+Y+TmYOTmYOR0rjiw/EsHIzcHI6dzFTADPWtgDdy0wBwwDywAi9Az5TcazN0xcnMwcnMycjpYHIP5l05Gbk5GDpIVQQNla2ANHbUEHUFPMBCMUDaJuQbTd4zcHIzcHIyczhUHln/pYOTmYOR0rgJmoGcNrIGbFpgD5oEFYBF6pvxGg7k7Rm4ORm5ORk4Hi2Mw/9LJyM3JyEGyImigbA2soaOWoCPoCQaCEcomMddg+o6Rm4ORm4OR07niwPIvHYzcHIyczlXADPSsgTVw0wJzwDywACxCz5TfqD/3omPkFmDkFmTkdLA4BrMvHWB5hNmXDsmKoIGyNbCGjlqCjqAnGAhGKJvEXIPpO0ZuAUZuAUZO54oDy750zcoDy750nauAGehZA2vgpgXmgHlgAViEnim/0WDujpFbgJFbkJHTweIYzL90MnILMnKQrAgaKFsDa+ioJegIeoKBYISyScw1mL5j5BZg5BZg5HSuOLD8SwcjtwAjp3MVMAM9a2AN3LTAHDAPLACL0DPlNxrM3TFyCzByCzJyOlgcg/mXTkZuQUYOkhVBA2VrYA0dtQQdQU8wEIxQNom5BtN3jNwCjNwCjJzOFQeWf+lg5BZg5HSuAmagZw2sgZsWmAPmgQVgEXqm/EaDuTtGbgFGbkFGTgeLYzD/0snILcjIQbIiaKBsDayho5agI+gJBoIRyiYx12D6jpFbgJFbgJHTueLA8i8djNwCjJzOVcAM9KyBNXDTAnPAPLAALELPlN9oMHfHyC3AyC3IyOlgcQzmXzoZuQUZOUhWBA2UrYE1dNQSdAQ9wUAwQtkk5hpM3zFyCzByCzByOlccWP6lg5FbgJHTuQqYgZ41sAZuWmAOmAcWgEXomfIb9ededozcEozckoycDhbHYPalAyyPMPvSIVkRNFC2BtbQUUvQEfQEA8EIZZOYazB9x8gtwcgtwcjpXHFg2ZeuWXlg2ZeucxUwAz1rYA3ctMAcMA8sAIvQM+U3GszdMXJLMHJLMnI6WByD+ZdORm5JRg6SFUEDZWtgDR21BB1BTzAQjFA2ibkG03eM3BKM3BKMnM4VB5Z/6WDklmDkdK4CZqBnDayBmxaYA+aBBWAReqb8RoO5O0ZuCUZuSUZOB4tjMP/SycgtychBsiJooGwNrKGjlqAj6AkGghHKJjHXYPqOkVuCkVuCkdO54sDyLx2M3BKMnM5VwAz0rIE1cNMCc8A8sAAsQs+U32gwd8fILcHILcnI6WBxDOZfOhm5JRk5SFYEDZStgTV01BJ0BD3BQDBC2STmGkzfMXJLMHJLMHI6VxxY/qWDkVuCkdO5CpiBnjWwBm5aYA6YBxaAReiZ8hsN5u4YuSUYuSUZOR0sjsH8SycjtyQjB8mKoIGyNbCGjlqCjqAnGAhGKJvEXIPpO0ZuCUZuCUZO54oDy790MHJLMHI6VwEz0LMG1sBNC8wB88ACsAg9U36j/tyrjpFbgZFbkZHTweIYzL50gOURZl86JCuCBsrWwBo6agk6gp5gIBihbBJzDabvGLkVGLkVGDmdKw4s+9I1Kw8s+9J1rgJmoGcNrIGbFpgD5oEFYBF6pvxGg7k7Rm4FRm5FRk4Hi2Mw/9LJyK3IyEGyImigbA2soaOWoCPoCQaCEcomMddg+o6RW4GRW4GR07niwPIvHYzcCoyczlXADPSsgTVw0wJzwDywACxCz5TfaDB3x8itwMityMjpYHEM5l86GbkVGTlIVgQNlK2BNXTUEnQEPcFAMELZJOYaTN8xciswciswcjpXHFj+pYORW4GR07kKmIGeNbAGblpgDpgHFoBF6JnyGw3m7hi5FRi5FRk5HSyOwfxLJyO3IiMHyYqggbI1sIaOWoKOoCcYCEYom8Rcg+k7Rm4FRm4FRk7nigPLv3QwciswcjpXATPQswbWwE0LzAHzwAKwCD1TfqPB3B0jtwIjtyIjp4PFMZh/6WTkVmTkIFkRNFC2BtbQUUvQEfQEA8EIZZOYazB9x8itwMitwMjpXHFg+ZcORm4FRk7nKmAGetbAGrhpgTlgHlgAFqFnym/Un3vdMXJrMHJrMnI6WByD2ZcOsDzC7EuHZEXQQNkaWENHLUFH0BMMBCOUTWKuwfQdI7cGI7cGI6dzxYFlX7pm5YFlX7rOVcAM9KyBNXDTAnPAPLAALELPlN9oMHfHyK3ByK3JyOlgcQzmXzoZuTUZOUhWBA2UrYE1dNQSdAQ9wUAwQtkk5hpM3zFyazByazByOlccWP6lg5Fbg5HTuQqYgZ41sAZuWmAOmAcWgEXomfIbDebuGLk1GLk1GTkdLI7B/EsnI7cmIwfJiqCBsjWwho5ago6gJxgIRiibxFyD6TtGbg1Gbg1GTueKA8u/dDByazByOlcBM9CzBtbATQvMAfPAArAIPVN+o8HcHSO3BiO3JiOng8UxmH/pZOTWZOQgWRE0ULYG1tBRS9AR9AQDwQhlk5hrMH3HyK3ByK3ByOlccWD5lw5Gbg1GTucqYAZ61sAauGmBOWAeWAAWoWfKbzSYu2Pk1mDk1mTkdLA4BvMvnYzcmowcJCuCBsrWwBo6agk6gp5gIBihbBJzDabvGLk1GLk1GDmdKw4s/9LByK3ByOlcBcxAzxpYAzctMAfMAwvAIvRM+Y16c09enIzcw1+rl35g2ZcOweIYzL10guUR5l46JSuCBsrWwBo6agk6gp5gIBihbBJzDaYfd6bXRu7Aci8dcsWB5V46sPLAci8dchUwAz1rYA3ctMAcMA8sAIvQM+U3Gsw96cytjdyBiZeujdwxmH/pYOSOMP/SwcgRNFC2BtbQUUvQEfQEA8EIZZOYazD9tDO9NnIHln/p2sgdWP6layN3YPmXro0cMAM9a2AN3LTAHDAPLACL0DPlNxrMPevMrY3cgYmXro3cMZh/6WDkjjD/0sHIETRQtgbW0FFL0BH0BAPBCGWTmOvT9M/vL7bbfbHZb77+cvNhvysvr/bbu9Hd9l37QzB7+Rh+/vWX19u799tX26ur+9H57sNNe+bhT4bjrz59/fRlmva++unXJ+2d3K+PX6bxw68/P53/+su3bZf/2lxdtv/zcndz/P3GDz+bfTa6//vjnVfzl08/dhe7j8Xd7rbYfbz56tmLT79gbm4/7N32/n7zftue+fSLZ3d3u7vuL26urnYfv73a3Pz0+LfbB/7mcn/V0lcXu939drQZXV3e77dvRz9vrj5sn77kq2evt1fb831LH3959O5udz3aX2xHb9seb9seXzwb3ba/drt/uvb09Y9f93DwgMXvM9rdja62m5+3ox8fyo3az+LyavTTzafL+19u25OPZ77+8t3u7vrD1Wb89Vdnf/9weXu9vdm/afn9l8+P5Mvn/U9QfaJm/tL8+xPtfKLm5r79i4eP6Ld+pPX8Zf3vjzT7kb7eb/Yf7n/TpxrnL+O/P9Xc0399sfltP6jF/GXxuR/pi9/ykW7PfxpdPpw5fpBnNw//zNmM9tvr2+1d+8Nwt22/YvSnP4yXi7++On6zb7fnl9ebq2ej3eNXPSTf3203bfbNxeam+zH8ZbKcfjGe/4bv/mz+8uz/3+++nL8sf5fv/tP3dHnzfvR288v9pyfyYrTfjaaLxfET+Hixu9p2v/8ft/uP223ve3/R/a6f/mrydXvl+OuTz/40vpu//O53+lm42d385Wb7vq3TPv93H7ZX7R8Vl+fbz/xhCHftHwMtVZ/LZ37/1fxl9a/+/t+9uzy/3N6c/zK6/nC/H/24HT19X+2frJub9mdic/O2/XRG17v2lTz+0vjFiz/S55L7IflinP0xaU/9hh+TZv6y+V1+TPYXl+c/3bRXHv64uLw5v9je/3XU/oO0/ZQ+Xmxv2n9gXH76Z+z27b/2B8fOX9rf54+RD+1//8v9h7t3m/Pt/wt/oLr5S/e7fBJvLzfX2/Yvnn+8fLu/OP2A/Ibv/rf8BPj5S/+7fN9X25v3+4vnF9vL9xf7h2+7/RTu/mXfdpi/DL/P3NvbTyt/+nZHbfP232Of7zc379tv4G502b6Fz/0Q/q//EBj8Qvvv4W/bb8Zt7t63f/60i7xr/xXuiy8e/rOU7h5WOfzNfnf7+B3+uNvvd9ePf3mx3bzd3j18Qcvf7Xb7w988/3Tz9Xb/4bb918XtPyH2j79X+6+A238g3J+3/1q3DVzu3+yq7dPv8fT3f3v4+X84/uAZPu7ufnoUHl//L1BLAwQUAAAACABISktdJRcbM2oEAACHEQAAGAAAAHhsL3dvcmtzaGVldHMvc2hlZXQyLnhtbI1YXXObOhD9Kxo/3MdioPnqdTzj4Dhpb5pm4jR5lmFtNBESFSKO++vviiTInbLgB4/52qM9qz27C5OtNs9VDmDZayFVdT7KrS2/BEGV5lDw6pMuQeGdtTYFt3hqNkFVGuBZY1TIIBqPj4OCCzWaTpprd2Y60bWVQsGdYVVdFNzsLkDq7fkoHH1cuBeb3LoLwXRS8g0swf4s7wyeBS1KJgpQldCKGVifj2bhl3l85gyaJx4FbKu9Y1blentlRHaDKyOR8Yg5ciutn93tr5m7hM+DhNQ6UI5/L5CAlA4bPfv1vsyo9cIZ7h9/rLdowoH0VryCRMsnkdn8fHQ6YhmseS3tvd5ewzvFo9blObd8OjF6y4yjPp2k7qBZG8/jEcPHhXKRW1qDtwWuZ6eXv2pRYiTsw66EahJY9MjdCdJ3gIsBgK+qqiV3nCmE5GCEpeW2rjpB5ofyWOb8LzcCjEobmqgNTURgXQO37PI1zbnagOmKCWX5Hc8Nl+xJa9kVCcoOQ2C5lJB1MaeMkh1eyYxIueyhG7d0qdBdaCG7aVIWCZIsRMoWYtVpmFCGt9qyXq6U4T3KCncD88T0cP3ccv1M4Cxqo3gKXWQpk4TLVNQFWwqJobZdtgllew+FfulmSpksc6wZ7B9elP+yh3oFPXSPWrpHBNidKDu5ks9ruasNWMx8YAvNiy6ylPGcF1hrsx6Hj1uHj6lga5VhWe5OR9III+Yyg11JXvVJ/6Rd/4TcMCzcunN1ymQGRm+gT4Kn7bKn1KZbYQxk7IGrZ9bjA2V/q1Vfopy1DpxRupC1yMRvdOECf50e/IEYjn2DGVOY4vVwvL2GFVLJKesNW2CrPwTPV/mQqp8X3Kb5IVi+hJLt5xtPn8Ei1Ueoqt5kCH2RCsmyoS1OMew/IVUfktd/SGpSVFbIt+7KcJaoi15EL9CQEtvlCy+14QMh80oLKd0kZtc0Asy6XiivnpCWD3q0gUY+fVBeByElhDuDG4glcHgjIy+BiJLAQw44y0l2oIORV0FEqWBusBfNza43aNHekEOl/7I0fDeM5JM/opJ/gWU3H0byiR+R7VnWwK54xRIJXAm16cPz6R9R6b+0wAvWNeD8CeXzPqLy/mMrfwjJ3IDYD+jzP6Ly/xpnoSeHM5gVXgERpYBEF6XLXKxAM2HYbI24KQ6h/V56PUSUHppZGKcvHGOwIr3F8wrclNtfAWKvjphSB8LW5TCSF0VMtgYD+dCexF4TMTlSNyFjAUtyrJr9cHuDNSWM611mdMrNyhVfgy0CM5r9VML24XqZxPRIioVzZ3ECx3kJN2aAuBdKTAqllusaXyXYLBWuX28O2WKvmphSzawotBKcLXfK5lCJ6oB+G3vxxJR4bm6v2KNrRAPdI/baiSnt3Ah8d8zYrbBukFNDcoy9amJKNT+QrEujgqu6++0s2Htnd58ovnOzEapiEtaIOP50gjtl3t7x306sLptPHCttrS6aQ0z5DIx7AO+vtbYfJ+4TQ/vtZfo/UEsDBBQAAAAIAEhKS104qTZtiAMAAMQVAAANAAAAeGwvc3R5bGVzLnhtbOVYbW/aMBD+K1F+wEISSMkESC0QadI2VWo/7KshDlhy4swxHezXzxcHEsBXuhWt1RZUxb7zPffc+fySjiq14/RhTalytjkvqrG7Vqr86HnVck1zUn0QJS20JhMyJ0p35cqrSklJWoFRzr2g14u8nLDCnYyKTZ7kqnKWYlOosdtzvckoE0UruXGNQA8lOXWeCB+7U8LZQrJ6LMkZ3xlxAIKl4EI6SlOhY9cHSfXTqH3TA5YNTs4KIUHoGQ+nfm5LJSpnxqqSkx2MWzRIrSO5WmjWvaR+jrwNLwE/Cxj0wn5/dk7/EiDDAKPgZjC8OwLsvYqhJeQXAV4K8xykS6FR1K9KD2CcH0pl6BrBZFQSpagsEt2pbWrhmcpp2o+7UtfKSpKdHwzcFxtUgrMUXK6m3ZD8KPT7dV68jukrQee3iZ9cGzTpJzfJ3ZVBg0EUzq8N2tbaNUGHyW0yQ0Hrly6xhZAplYciC929aDLiNFPaXLLVGt5KlLBghFIi142UkZUoSF2Be4v2DYOcei/V+xBN2SZ3T9ZGp5DM8Is4a8LkKcpsNh/M53aUpqGDXFLOHwDkW3aI1NdQ28wxO/SnFDZnB5bdvqnT0zQNjOmAoy6awe7C9v8I1ynZk1B3Gx1CUfe/b4Si95JmbFv3t9mBAIbut+jBCTopS7675WxV5NQE/2KHkxHZ2zlPVCq2hN1qqbvUHC7bDKcUtJTCv0TJ+SFJ+Ui3ar+lPscvbPn13yO/fstv0OXnX43fWkj2U3vrMnwd50HLOepyDt6uDN+A0uWUBe8vZf77o2SfxZv/l9KfFtabpsxeWO9lFqOrHMtecxPoXDeOLhsHqQOfDWP3K3xB8hbCWWwYV6xoemuWprQ4u3NoeEUW+hP1CF+PT2lGNlw9HpRjt21/qa9g8WHUPYTVjGrbn+Gm50eHzxjtixUp3dJ02nT1revokmkeMDjVtHfacw1mY3R2DegwPxgDzMZYYX7+pXiGaDxGh3EbWjVD1GaI2hgrm2Za/zA/dptYP/ZI4zgMowjL6HRqZTDF8hZF8GdHw7iBBeYHPP1ervHZxivk+TrA5vS5CsEixSsRixTPNWjseQOLOLbPNuYHLLBZwGoH/Nv9QE3ZbcIQZhXjhq1gXBPHmAZq0V6jUYRkJ4KffX6wVRKGcWzXgM7OIAwxDaxGXIMxAA6YJgzrc/DkPPL255TX/t928gtQSwMEFAAAAAgASEpLXZeKuxzAAAAAEwIAAAsAAABfcmVscy8ucmVsc52SuW7DMAxAf8XQnjAH0CGIM2XxFgT5AVaiD9gSBYpFnb+v2qVxkAsZeT08EtweaUDtOKS2i6kY/RBSaVrVuAFItiWPac6RQq7ULB41h9JARNtjQ7BaLD5ALhlmt71kFqdzpFeIXNedpT3bL09Bb4CvOkxxQmlISzMO8M3SfzL38ww1ReVKI5VbGnjT5f524EnRoSJYFppFydOiHaV/Hcf2kNPpr2MitHpb6PlxaFQKjtxjJYxxYrT+NYLJD+x+AFBLAwQUAAAACABISktdVhjDnuABAACVBAAADwAAAHhsL3dvcmtib29rLnhtbLWU226bQBCGX4WukHwXMHWiBhlLjd2Dpah1ayu31hqGMMoe6O4QJ3n67EJxcVwp6UVvWGYWvvnn34HpXpu7ndZ3wYMUymasIqrTKLJ5BZLbM12DcjulNpKTC81tZGsDvLAVAEkRJXF8EUmOis2mPWtlomGgCXJCrVzSJ24Q9vbPvg+De7S4Q4H0mLH2XgALJCqU+ARFxmIW2Ervv2qDT1oRF+vcaCEyNu42bsAQ5ifptRe54TvbZojvfnInJGMXsQOWaCy1T7R87jTeg3u4ixrSn1EQmAUn+GJ0U6O69RjXRTRoo/WhXzsTU/MWG3VZYg4LnTcSFHU+GhBeoLIV1pYFikvI2FLVDQVLAml9V67Msug6JCdt4JdJ0W2YZdGK/H+CrtHSUEpykFJhUYAaKElau3qPCihRQfHNUY6j3+BPvxqsffHNYw2WzUZtpdG78GOYpO7y/nIaDd76G2KpbNNJfsm48oyr8MM/INauq8YeUeaeMg/PX6UcellX/FjIwiMW4eRVxPZBKHm2PYwh33HrjlloP+i9+W5WO9f9SMxGg2FpfZuk4Y8wid9abGVQ0XaDJJzkk0ov8eP0pIvo+Izd+/nKBH5phzaZnI8v3afXCDF3ue/qWvOi/6r6P8LsGVBLAwQUAAAACABISktdjfcsWrQAAACJAgAAGgAAAHhsL19yZWxzL3dvcmtib29rLnhtbC5yZWxzxZJNCoMwEEavEnKAjtrSRVFX3bgtXiDo+IPRhMyU6u1rdaGBLrqRrsI3Ie97MIkfqBW3ZqCmtSTGXg+UyIbZ3gCoaLBXdDIWh/mmMq5XPEdXg1VFp2qEKAiu4PYMmcZ7psgni78QTVW1Bd5N8exx4C9geBnXUYPIUuTK1ciJhFFvY4LlCE8zWYqsTKTLylDCv4UiTyg6UIh40kibzZq9+vOB9Ty/xa19ievQ38nl4wDez0vfUEsDBBQAAAAIAEhKS11upyS8HgEAAFcEAAATAAAAW0NvbnRlbnRfVHlwZXNdLnhtbMWUz07DMAzGX6XKdWoyduCA1l2AK+zAC4TWXaPmn2JvdG+P226TQKNiKhKXRo3t7+f4i7J+O0bArHPWYyEaovigFJYNOI0yRPAcqUNymvg37VTUZat3oFbL5b0qgyfwlFOvITbrJ6j13lL23PE2muALkcCiyB7HxJ5VCB2jNaUmjquDr75R8hNBcuWQg42JuOAEoa4S+sjPgFPd6wFSMhVkW53oRTvOUp1VSEcLKKclrvQY6tqUUIVy77hEYkygK2wAyFk5ii6mycQThvF7N5s/yEwBOXObQkR2LMHtuLMlfXUeWQgSmekjXogsPft80LtdQfVLNo/3I6R28APVsMyf8VePL/o39rH6xz7eQ2j/+qr3q3Ta+DNfDe/J5hNQSwECFAMUAAAACABISktdRsdNSJUAAADNAAAAEAAAAAAAAAAAAAAAgAEAAAAAZG9jUHJvcHMvYXBwLnhtbFBLAQIUAxQAAAAIAEhKS11YOOXpRgEAAC0DAAARAAAAAAAAAAAAAACAAcMAAABkb2NQcm9wcy9jb3JlLnhtbFBLAQIUAxQAAAAIAEhKS12ZXJwjEAYAAJwnAAATAAAAAAAAAAAAAACAATgCAAB4bC90aGVtZS90aGVtZTEueG1sUEsBAhQDFAAAAAgASEpLXWmPUOl+KwAAEZ4BABgAAAAAAAAAAAAAAICBeQgAAHhsL3dvcmtzaGVldHMvc2hlZXQxLnhtbFBLAQIUAxQAAAAIAEhKS10lFxszagQAAIcRAAAYAAAAAAAAAAAAAACAgS00AAB4bC93b3Jrc2hlZXRzL3NoZWV0Mi54bWxQSwECFAMUAAAACABISktdOKk2bYgDAADEFQAADQAAAAAAAAAAAAAAgAHNOAAAeGwvc3R5bGVzLnhtbFBLAQIUAxQAAAAIAEhKS12XirscwAAAABMCAAALAAAAAAAAAAAAAACAAYA8AABfcmVscy8ucmVsc1BLAQIUAxQAAAAIAEhKS11WGMOe4AEAAJUEAAAPAAAAAAAAAAAAAACAAWk9AAB4bC93b3JrYm9vay54bWxQSwECFAMUAAAACABISktdjfcsWrQAAACJAgAAGgAAAAAAAAAAAAAAgAF2PwAAeGwvX3JlbHMvd29ya2Jvb2sueG1sLnJlbHNQSwECFAMUAAAACABISktdbqckvB4BAABXBAAAEwAAAAAAAAAAAAAAgAFiQAAAW0NvbnRlbnRfVHlwZXNdLnhtbFBLBQYAAAAACgAKAIQCAACxQQAAAAA=" download="Insulation_Input_Template.xlsx">
+            <span>⇩</span> Download Blank Template (.xlsx)
+          </a>
+          <button class="btn btn-excel-upload" id="chooseExcelBtn" type="button">
+            <span>⇧</span> Input Excel File (.xlsx)
+          </button>
+        </div>
+      </div>
+
+      <div class="import-status" id="importStatus" aria-live="polite">
+        Expected columns: Equipment ID, Description, Equipment Type, Shape, Status, Operating Temps, and Dimensions.
+      </div>
+      <div class="import-preview" id="importPreview" hidden></div>
+    </section>
+
+    <div class="work-stack" style="display:flex; flex-direction:column; gap:22px; margin-bottom:24px;">
+      <!-- LIVE CALCULATION PREVIEW (PLACED ABOVE FORM FOR GENEROUS FIELD SPACING) -->
+      <aside class="panel live-panel" aria-live="polite">
+        
+        <div class="live-head"><small>Live calculation preview</small><h3>Item result</h3></div>
+        <div class="live-body" id="livePreview"><div class="live-empty"><div class="empty-icon">◌</div>Enter the required operating and geometry data to preview calculated results.</div></div>
+      
+      </aside>
+
+      <!-- ADD EQUIPMENT ITEM FORM (FULL WIDTH) -->
+      <div class="panel form-panel">
+        
+        <div class="section-head"><div><h2 id="formHeading">Add equipment item</h2><p>Complete the inputs below. Add another item after each entry; finish when the list is ready.</p></div><div class="required-note">* Required for calculation</div></div>
+        <div class="error-box" id="errorBox" role="alert"></div>
+        <form id="entryForm" novalidate>
+          <div class="form-section">
+            <h3>01 · Equipment identification</h3>
+            <div class="fields">
+              <div class="field"><label for="equipmentId">Equipment ID <span class="unit">*</span></label><input id="equipmentId" autocomplete="off" placeholder="e.g. 02-H-01"></div>
+              <div class="field span2"><label for="description">Process description <span class="unit">*</span></label><input id="description" autocomplete="off" placeholder="e.g. HP steam main header"></div>
+              <div class="field"><label for="equipmentType">Equipment type <span class="unit">*</span></label><select id="equipmentType"></select></div>
+              <div class="field"><label for="shape">Equipment shape <span class="unit">*</span></label><select id="shape"><option value="Cylindrical">Cylindrical</option><option value="Rectangular">Rectangular</option><option value="Shell & Tube">Shell &amp; Tube</option></select></div>
+              <div class="field"><label for="status">Insulation status <span class="unit">*</span></label><select id="status"><option value="Not Installed">Not Installed</option><option value="Installed">Installed</option><option value="Removed">Removed</option><option value="Damaged">Damaged</option></select></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>02 · Operating conditions</h3>
+            <div class="fields">
+              <div class="field"><label for="processTemp">Process temperature <span class="unit">°C · *</span></label><input id="processTemp" type="number" step="any" placeholder="e.g. 345"></div>
+              <div class="field"><label for="ambientTemp">Ambient temperature <span class="unit">°C · *</span></label><input id="ambientTemp" type="number" step="any" placeholder="e.g. 27"></div>
+              <div class="field"><label for="surfaceTemp">Outer surface temperature <span class="unit">°C · *</span></label><input id="surfaceTemp" type="number" step="any" placeholder="e.g. 55"></div>
+              <div class="field"><label for="operatingDays">Operating days <span class="unit">days/year · *</span></label><input id="operatingDays" type="number" min="0" max="366" step="1" placeholder="e.g. 365"></div>
+              <div class="field"><label for="fuelPrice">Fuel gas price <span class="unit">$/MMBtu · *</span></label><input id="fuelPrice" type="number" min="0" step="any" placeholder="e.g. 7.75"></div>
+              <div class="field"><label for="efficiency">Fuel-to-useful-heat efficiency <span class="unit">% · *</span></label><input id="efficiency" type="number" min="0.1" max="100" step="any" placeholder="e.g. 85"><div class="helper">Enter a percentage, for example 85 for 85%.</div></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>03 · Geometry &amp; insulation</h3>
+            <div class="fields">
+              <div class="field"><label for="insulationType">Insulation type</label><select id="insulationType"></select><div class="helper">Required when status is Installed.</div></div>
+              <div class="field"><label for="thickness">Current insulation thickness <span class="unit">inch</span></label><input id="thickness" type="number" min="0" step="any" placeholder="0 if not installed"></div>
+              <div class="field"><label for="diameter">Diameter / width <span class="unit">inch · *</span></label><input id="diameter" type="number" min="0" step="any" placeholder="e.g. 4"></div>
+              <div class="field"><label for="length">Length / height <span class="unit">m · *</span></label><input id="length" type="number" min="0" step="any" placeholder="e.g. 1"></div>
+              <div class="field"><label for="depth">Equipment depth <span class="unit">m</span></label><input id="depth" type="number" min="0" step="any" placeholder="Required for rectangular shape"><div class="helper">Required only for rectangular equipment.</div></div>
+              <div class="field span2"><label for="notes">Notes <span class="unit">optional</span></label><input id="notes" autocomplete="off" placeholder="Field observations, data source, or assumptions"></div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <div class="action-left"><button class="btn btn-primary" type="button" id="addItemBtn">＋ Add item &amp; add another</button><button class="btn btn-quiet" type="button" id="clearFormBtn">Clear form</button></div>
+            <div class="action-right"><button class="btn btn-finish" type="button" id="finishBtn" style="background:#0e7a55; color:#fff; font-weight:750; display:inline-flex; align-items:center; gap:8px;"><span>📄</span> Generate ISO Report →</button></div>
+          </div>
+        </form>
+      
+      </div>
+    </div>
+    <section class="panel queue-panel" id="queuePanel">
+      <div class="queue-head"><div><h2>Assessment items</h2><div class="queue-count" id="queueCount">No items added yet</div></div><button class="btn btn-secondary btn-sm" id="addBlankBtn" type="button">＋ Add another item</button></div>
+      <div id="queueContent"></div>
+    </section>
+    <details class="method-details">
+      <summary>Calculation basis, assumptions &amp; limitations</summary>
+      <div class="method-content">
+        <h3>Thermal model &amp; report reference</h3>
+        <ul>
+          <li><strong>Heat loss and energy cost:</strong> estimates external convection and radiation heat loss, annual operating hours, fuel cost per MMBtu, and fuel-to-useful-heat efficiency. The simplified screening calculation assumes hot service and steady-state inputs, with process temperature above surface temperature above ambient.</li>
+          <li><strong>Potential savings:</strong> for Not Installed, Removed, or Damaged items, the default assumption is that post-insulation heat loss is 30% of current loss (70% savings). This is editable, but it is not a proposed insulation design or guaranteed saving.</li>
+          <li><strong>CAPEX:</strong> the default screening estimate is surface area × $150/m². The rate is editable and is not a quotation or validated estimate. Payback and annual simple ROI use this area-based CAPEX proxy.</li>
+          <li><strong>Reference conductivity:</strong> uses the embedded material table and nearest lower temperature band (0, 100, 200, 400, 600°C). Verify temperature applicability and conductivity with the selected product supplier, especially above the highest tabulated band.</li>
+          <li><strong>Financial basis:</strong> energy-only NPV discounts annual energy savings using the entered project life and discount rate. Carbon-inclusive value is a separate shadow-price case, not revenue, tax, credit, or cash saving. Annual simple ROI is not IRR; taxes, escalation, FX, and detailed cash-flow timing are not modelled.</li>
+          <li><strong>Emissions:</strong> the default factor of 0.181 kg CO₂/kWh-fuel is editable. Confirm its source, year, gas basis, and reporting boundary. Avoided emissions are estimates until measured and reconciled under an agreed M&amp;V method.</li>
+          <li><strong>ISO reference:</strong> ISO 12241:2022, <em>Thermal insulation for building equipment and industrial installations — Calculation rules</em>, is listed as a reference for predominantly steady-state heat-transfer calculations. This screening tool has not been independently verified as conforming to the full standard; confirm the licensed standard, project conditions, and any applicable client/site requirements before design or approval. <a href="https://www.iso.org/standard/74655.html" target="_blank" rel="noopener">Official ISO listing</a>.</li>
+          <li><strong>Safety &amp; operations:</strong> surface-temperature, moisture, risk, and priority labels are screening flags only—not safety determinations or standards-compliance checks. Field-check data, assess operating cases, maintainability, safety, environmental constraints, controls, utilities, interfaces, and online/turnaround execution. Follow site approval and MOC processes.</li>
+          <li><strong>Applicability:</strong> the cost model is fuel-gas/hot-service based. Cold or cryogenic service, cooling/refrigeration economics, and detailed retrofit design require a different model and additional inputs.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <section class="view" id="summaryView" hidden>
+    <div class="summary-top">
+      <div>
+        <h2 id="summaryTitle">Thermal Insulation Assessment</h2>
+        <p id="summarySubtitle">Portfolio view across all saved items.</p>
+      </div>
+      <div class="summary-actions">
+        <button class="btn btn-outline" id="backToEntryBtn" type="button">← Back to items</button>
+        <button class="btn btn-primary" id="generateIsoReportBtn" type="button" style="background:#0e7a55; border-color:#0e7a55; box-shadow:0 5px 15px rgba(14,122,85,0.3); display:inline-flex; align-items:center; gap:8px;">
+          <span>🖨️</span> Print / Save as PDF
+        </button>
+      </div>
+    </div>
+    <section class="panel report-meta-panel">
+      <div class="report-meta-head">
+        <div>
+          <h3 style="font-size:16px; color:#1b3553; display:flex; align-items:center; gap:8px;">
+            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#2563eb;"></span>
+            ISO 12241 Technical Report Details
+          </h3>
+          <p>Configure project information and reporter credentials. These details are embedded directly into the ISO report template.</p>
+        </div>
+      </div>
+      <div class="report-meta-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px;">
+        <div>
+          <label for="reportProject" style="font-weight:750; color:#1e293b;">Project Name <span style="color:#dc2626;">*</span></label>
+          <input id="reportProject" type="text" placeholder="e.g. AQP Offshore Thermal Insulation Evaluation" value="Thermal Insulation Assessment" style="font-weight:600;">
+        </div>
+        <div>
+          <label for="reportPreparedBy" style="font-weight:750; color:#1e293b;">Reporter (Prepared by) <span style="color:#dc2626;">*</span></label>
+          <input id="reportPreparedBy" type="text" placeholder="e.g. Eng. Nader Elsawy (Lead Engineer)" style="font-weight:600;">
+        </div>
+        <div>
+          <label for="reportSite" style="font-weight:750; color:#1e293b;">Site / Process Facility Unit</label>
+          <input id="reportSite" type="text" placeholder="e.g. NA/Q P-I Platform & El-Meadia Plant">
+        </div>
+        <div>
+          <label for="reportDocRef" style="font-weight:750; color:#1e293b;">Document Reference / Report ID</label>
+          <input id="reportDocRef" type="text" value="ISO-12241-TIR-001">
+        </div>
+        <div>
+          <label for="reportStandard" style="font-weight:750; color:#1e293b;">Reference Standard</label>
+          <input id="reportStandard" type="text" value="ISO 12241:2022" readonly style="background:#f8fafc;">
+        </div>
+        <div>
+          <label for="reportDateDisplay" style="font-weight:750; color:#1e293b;">Report Issue Date</label>
+          <input id="reportDateDisplay" type="text" readonly style="background:#f8fafc; font-weight:600;">
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label for="reportConditions" style="font-weight:750; color:#1e293b;">Assessment Scope &amp; Operating Conditions</label>
+          <input id="reportConditions" type="text" value="Steady-state hot-service screening; surface heat loss and thermal resistance evaluation per ISO 12241:2022.">
+        </div>
+      </div>
+      <div class="report-iso-note" style="margin-top:12px; background:#eff6ff; border-left:4px solid #2563eb; padding:10px 14px; font-size:12px; color:#1e40af; border-radius:0 6px 6px 0;">
+        <strong>ISO 12241:2022 Template Standard:</strong> The generated report complies with international formatting rules for thermal insulation of industrial equipment, complete with executive scorecard, item schedule, calculation basis, and engineering sign-off blocks.
+      </div>
+    </section>
+    
+    
+    <!-- OFFICIAL ISO 12241 ENGINEERING REPORT TEMPLATE -->
+    
+    <!-- ISO REPORT ACTION TOOLBAR (VISIBLE ON SCREEN, HIDDEN IN PRINT) -->
+    <div class="iso-toolbar" style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; margin-bottom:12px; padding:12px 20px; background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; box-shadow:0 2px 8px rgba(15,23,42,0.05); flex-wrap:wrap; gap:12px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:20px;">📄</span>
+        <div>
+          <div style="font-weight:800; font-size:14px; color:#0f172a;">Official ISO 12241 Evaluation Report</div>
+          <div style="font-size:12px; color:#64748b;">The PDF export contains exclusively this official ISO report — no website or forms will be included.</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <button class="btn btn-outline btn-sm" id="toolbarBackBtn" type="button">
+          ← Back to Inputs
+        </button>
+        <button class="btn btn-finish btn-sm" id="toolbarPrintBtn" type="button" style="background:#059669; color:#fff; font-weight:750; box-shadow:0 3px 8px rgba(5,150,105,0.25);">
+          <span>🖨️</span> Save PDF Report (ISO Only)
+        </button>
+      </div>
+    </div>
+
+    <section class="iso-report-container" id="isoReportContainer">
+      <!-- HEADER BOX -->
+      <div class="iso-header-box">
+        <div class="iso-col-left">
+          <div class="iso-logo-badge">ISO</div>
+          <div class="iso-standard-title">INTERNATIONAL STANDARD<br><strong>ISO 12241:2022</strong></div>
+          <div style="font-size:9px; color:#64748b; margin-top:3px;">Industrial Equipment Rules</div>
+        </div>
+        <div class="iso-col-center">
+          <div class="iso-doc-type">TECHNICAL EVALUATION REPORT</div>
+          <h1 class="iso-report-h1" id="isoPrintProjectName">Thermal Insulation Assessment</h1>
+          <div class="iso-facility" id="isoPrintFacility">Facility / Unit: General Facility</div>
+        </div>
+        <div class="iso-col-right">
+          <table class="iso-meta-mini-table">
+            <tr><th>Doc Ref:</th><td id="isoPrintDocRef">ISO-12241-TIR-001</td></tr>
+            <tr><th>Rev:</th><td>0 (Official)</td></tr>
+            <tr><th>Date:</th><td id="isoPrintDate"></td></tr>
+            <tr><th>Standard:</th><td>ISO 12241</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- SECTION 1: DOCUMENT CONTROL -->
+      <div class="iso-section-title">1. DOCUMENT &amp; RESPONSIBILITY CONTROL</div>
+      <table class="iso-table iso-control-table">
+        <tbody>
+          <tr>
+            <td class="iso-lbl" style="width:18%;">Project Name:</td>
+            <td class="iso-val-highlight" style="width:32%;" id="isoCtrlProject">Thermal Insulation Assessment</td>
+            <td class="iso-lbl" style="width:18%;">Reporter:</td>
+            <td class="iso-val-highlight" style="width:32%;" id="isoCtrlReporter">Not specified</td>
+          </tr>
+          <tr>
+            <td class="iso-lbl">Site / Facility Unit:</td>
+            <td id="isoCtrlSite">Not specified</td>
+            <td class="iso-lbl">Applicable Standard:</td>
+            <td><strong id="isoCtrlStandard">ISO 12241:2022</strong> (Calculation Rules for Thermal Insulation)</td>
+          </tr>
+          <tr>
+            <td class="iso-lbl">Assessment Scope:</td>
+            <td colspan="3" id="isoCtrlConditions">Steady-state hot-service screening; surface heat loss and thermal resistance evaluation per ISO 12241:2022.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- SECTION 2: EXECUTIVE SUMMARY & SCORECARD -->
+      <div class="iso-section-title">2. EXECUTIVE SUMMARY &amp; KPI SCORECARD</div>
+      <div class="iso-kpi-grid" id="isoKpiGrid">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- SECTION 3: CALCULATION BASIS -->
+      <div class="iso-section-title">3. DESIGN &amp; SCREENING BASIS (ISO 12241 PARAMETERS)</div>
+      <table class="iso-table" id="isoBasisTable">
+        <!-- Rendered dynamically -->
+      </table>
+
+      <!-- SECTION 4: EQUIPMENT SCHEDULE & RESULTS -->
+      <div class="iso-section-title">4. EQUIPMENT EVALUATION SCHEDULE &amp; TECHNICAL RESULTS</div>
+      <div style="overflow-x:auto;">
+        <table class="iso-table iso-results-table">
+          <thead>
+            <tr>
+              <th style="width:5%;">#</th>
+              <th style="width:15%;">Equipment Tag</th>
+              <th style="width:20%;">Description &amp; Geometry</th>
+              <th style="width:12%;">Operating / Ambient</th>
+              <th style="width:10%;">Area (m²)</th>
+              <th style="width:12%;">Heat Loss (kW)</th>
+              <th style="width:13%;">Potential Savings</th>
+              <th style="width:13%;">Payback &amp; Priority</th>
+            </tr>
+          </thead>
+          <tbody id="isoResultsTableBody">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SECTION 5: METHODOLOGY & CONFORMITY DECLARATION -->
+      <div class="iso-section-title">5. METHODOLOGY &amp; CONFORMITY DECLARATION</div>
+      <div class="iso-declaration-box">
+        <p><strong>Conformity Basis:</strong> This engineering evaluation applies the steady-state thermal conduction equations and surface heat transfer coefficient formulations specified in <strong>ISO 12241:2022</strong> (<em>Thermal insulation for building equipment and industrial installations — Calculation rules</em>).</p>
+        <p>Radial and planar thermal resistance layers have been evaluated against specified process operating temperatures and ambient conditions. Energy savings reflect post-intervention heat loss reduction under constant operating hours. Payback periods and NPV screens represent baseline engineering screening calculations.</p>
+      </div>
+
+      <!-- SECTION 6: FORMAL ENGINEERING SIGN-OFF -->
+      <div class="iso-section-title">6. ENGINEERING VERIFICATION &amp; SIGN-OFF</div>
+      <div class="iso-signoff-grid">
+        <div class="iso-sign-box">
+          <div class="iso-sign-role">REPORTER (PREPARED BY)</div>
+          <div class="iso-sign-name" id="isoSignReporter">Not provided</div>
+          <div class="iso-sign-line">Signature: _______________________</div>
+          <div class="iso-sign-date" id="isoSignDate1">Date: </div>
+        </div>
+        <div class="iso-sign-box">
+          <div class="iso-sign-role">CHECKED &amp; REVIEWED BY</div>
+          <div class="iso-sign-name">Lead Process &amp; Thermal Engineer</div>
+          <div class="iso-sign-line">Signature: _______________________</div>
+          <div class="iso-sign-date" id="isoSignDate2">Date: </div>
+        </div>
+        <div class="iso-sign-box">
+          <div class="iso-sign-role">APPROVED BY</div>
+          <div class="iso-sign-name">Operations &amp; Asset Integrity Manager</div>
+          <div class="iso-sign-line">Signature: _______________________</div>
+          <div class="iso-sign-date" id="isoSignDate3">Date: </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="summary-cards" id="summaryCards"></div>
+    <div class="summary-grid">
+      <div class="panel summary-panel"><h3>Item-by-item results</h3><div class="result-list" id="resultList"></div><div class="summary-caveat">Rows expand to show engineering calculations, assumptions, flags, and decision-screening metrics.</div></div>
+      <div class="summary-side">
+        <div class="panel summary-panel"><h3>Portfolio screen</h3><div id="portfolioScreen" class="priority-list"></div></div>
+        <div class="panel summary-panel"><h3>Interpretation notes</h3><div class="summary-note">Energy-only economics are shown separately from carbon value. The carbon-inclusive case applies the internal shadow price only to estimated avoided emissions; it is not cash revenue. Confirm the baseline, M&amp;V method, and cost basis before using benefits for approval or reporting.</div><div class="source-note">Risk and surface-temperature categories are screening flags only; they are not safety determinations or standards-compliance checks.</div></div>
+      </div>
+    </div>
+    <details class="method-details">
+      <summary>Calculation basis &amp; ISO reference notes</summary>
+      <div class="method-content">
+        <h3>Report interpretation</h3>
+        <ul>
+          <li>Potential savings use the editable residual-loss assumption (default 30%). CAPEX uses surface area × the editable rate (default $150/m²) for items with an action candidate.</li>
+          <li>Energy-only NPV discounts annual energy savings using the selected life and discount rate. Carbon-inclusive NPV adds a separate shadow value for estimated avoided emissions.</li>
+          <li>Annual simple ROI is annual energy savings divided by estimated CAPEX; it is not IRR. Tax, escalation, FX, and detailed cash-flow timing are not included.</li>
+          <li>The report references ISO 12241:2022 but does not claim certification or verified conformity. Check the method and operating/design conditions against the applicable licensed standard and project requirements.</li>
+          <li>No operating change, insulation design, safety approval, or external emissions claim should be based solely on this calculator.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+</main>
+<div class="footer"><span>Thermal insulation evaluation · Browser-based screening calculator</span><span>Entries remain in this browser session.</span></div>
+<div class="modal-shell" id="confirmModal" hidden><div class="modal-scrim" data-confirm-cancel></div><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="confirmTitle"><h3 id="confirmTitle">Confirm action</h3><p id="confirmMessage"></p><div class="modal-actions"><button class="btn btn-outline" id="confirmCancelBtn" type="button">Cancel</button><button class="btn btn-danger" id="confirmActionBtn" type="button">Continue</button></div></div></div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(() => {
+'use strict';
+const STORE_KEY='thermal-insulation-evaluator-v1';
+const PREVIOUS_STORE_KEY='thermal-insulation-evaluator-v05-v1';
+const TYPES=['Heat Exchanger','Boiler','Furnace','Pipe','Condenser','Reactor','Stirred Tank Reactor','Fluidized Bed Reactor','Fixed Bed Reactor','Plug Flow Reactor','Batch Reactor','Jacketed Vessel','Rotary Kiln','Distillation Column','Evaporator','Crystallizer','Storage Tank','Pressure Vessel','Thermal Storage Tank','Drum Dryer','Spray Dryer','Flash Dryer','Flue Gas Cleaning','Steam Boiler','Thermal Oil Heater','Hot Water Tank','Compressed Air Aftercooler','Heat Recovery Steam Generator','Recuperator','Preheater','Cooler / Chiller','Hydrocarbon Cracking Unit','Catalytic Converter','Sulfuric Acid Regenerator','Ammonia Synthesis Reactor','LNG Vaporizer','Liquid Nitrogen Tank','Other / manual'];
+const MATERIALS=['Mineral Wool','Ceramic Fiber','Calcium Silicate','Polyurethane Foam','Cellular Glass','Aerogel','None'];
+const K_TABLE={
+  'Mineral Wool':[[0,.038],[100,.045],[200,.055],[400,.075],[600,.100]],
+  'Ceramic Fiber':[[0,.030],[100,.035],[200,.040],[400,.050],[600,.065]],
+  'Calcium Silicate':[[0,.045],[100,.050],[200,.055],[400,.065],[600,.080]],
+  'Polyurethane Foam':[[0,.020],[100,.025],[200,.030],[400,.045]],
+  'Cellular Glass':[[0,.040],[100,.045],[200,.050],[400,.060]],
+  'Aerogel':[[0,.015],[100,.015],[200,.018],[400,.022],[600,.028]]
+};
+const DEFAULT_SETTINGS={residualPct:30,capexRate:150,lifeYears:5,discountPct:0,carbonPrice:50,emissionFactor:.181};
+const DEFAULT_REPORT={project:'Thermal Insulation Assessment',site:'',preparedBy:'',docRef:'ISO-12241-TIR-001',standard:'ISO 12241:2022',conditions:'Steady-state hot-service screening; surface heat loss and thermal resistance evaluation per ISO 12241:2022.'};
+const REPORT_IDS=['reportProject','reportSite','reportPreparedBy','reportDocRef','reportStandard','reportConditions'];
+const INPUT_IDS=['equipmentId','description','equipmentType','shape','status','processTemp','ambientTemp','surfaceTemp','operatingDays','fuelPrice','efficiency','insulationType','thickness','diameter','length','depth','notes'];
+const $=id=>document.getElementById(id);
+let state=loadState();
+let toastTimer;
+let pendingImport=null;
+function safeParse(s){try{return JSON.parse(s)}catch{return null}}
+let volatileStore=null;
+function loadState(){
+  try {
+    localStorage.clear();
+    sessionStorage.clear();
+  } catch(e) {}
+  return {
+    settings: { ...DEFAULT_SETTINGS },
+    reportMeta: { ...DEFAULT_REPORT },
+    items: [],
+    draft: emptyDraft(),
+    editingId: null,
+    screen: 'entry',
+    assessmentName: 'Insulation evaluation'
+  };
+}
+function saveState(){/* In-memory session state only: data is never stored across sessions so new users get a fresh blank slate */}
+function emptyDraft(){return {equipmentId:'',description:'',equipmentType:'',shape:'Cylindrical',status:'Not Installed',processTemp:'',ambientTemp:'',surfaceTemp:'',operatingDays:'',fuelPrice:'',efficiencyPct:'',insulationType:'None',thicknessIn:'0',diameterIn:'',lengthM:'',depthM:'',notes:''}}
+function esc(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function numOrNull(v){if(v===null||v===undefined||String(v).trim()==='')return null;const n=Number(v);return Number.isFinite(n)?n:null}
+function fmt(x,d=2){if(x===null||x===undefined||!Number.isFinite(Number(x)))return '—';return Number(x).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:d})}
+function money(x,d=2){if(x===null||x===undefined||!Number.isFinite(Number(x)))return '—';return '$'+Number(x).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d})}
+function pct(x,d=1){return x===null||!Number.isFinite(Number(x))?'—':`${fmt(x,d)}%`}
+function fixed(x,d=3){return x===null||!Number.isFinite(Number(x))?'—':Number(x).toFixed(d)}
+function val(id){return $(id).value}
+function readForm(){return {
+ equipmentId:val('equipmentId').trim(),description:val('description').trim(),equipmentType:val('equipmentType'),shape:val('shape'),status:val('status'),
+ processTemp:numOrNull(val('processTemp')),ambientTemp:numOrNull(val('ambientTemp')),surfaceTemp:numOrNull(val('surfaceTemp')),operatingDays:numOrNull(val('operatingDays')),fuelPrice:numOrNull(val('fuelPrice')),efficiencyPct:numOrNull(val('efficiency')),
+ insulationType:val('insulationType'),thicknessIn:numOrNull(val('thickness')),diameterIn:numOrNull(val('diameter')),lengthM:numOrNull(val('length')),depthM:numOrNull(val('depth')),notes:val('notes').trim()
+}}
+function draftToForm(d){
+ const map={equipmentId:'equipmentId',description:'description',equipmentType:'equipmentType',shape:'shape',status:'status',processTemp:'processTemp',ambientTemp:'ambientTemp',surfaceTemp:'surfaceTemp',operatingDays:'operatingDays',fuelPrice:'fuelPrice',efficiency:'efficiencyPct',insulationType:'insulationType',thickness:'thicknessIn',diameter:'diameterIn',length:'lengthM',depth:'depthM',notes:'notes'};
+ for(const [input,key] of Object.entries(map)){const el=$(input);if(!el)continue;const value=d?.[key]??'';if(el.tagName==='SELECT'&&value&&!Array.from(el.options||[]).some(o=>o.value===String(value))){const opt=document.createElement('option');opt.value=String(value);opt.textContent=String(value);el.appendChild(opt)}el.value=value}
+}
+function formToDraftObject(item){return {equipmentId:item.equipmentId,description:item.description,equipmentType:item.equipmentType,shape:item.shape,status:item.status,processTemp:item.processTemp,ambientTemp:item.ambientTemp,surfaceTemp:item.surfaceTemp,operatingDays:item.operatingDays,fuelPrice:item.fuelPrice,efficiencyPct:item.efficiencyPct,insulationType:item.insulationType,thicknessIn:item.thicknessIn,diameterIn:item.diameterIn,lengthM:item.lengthM,depthM:item.depthM,notes:item.notes}}
+function hasDraft(d){return Boolean(d.equipmentId||d.description||d.equipmentType||d.processTemp!==null||d.ambientTemp!==null||d.surfaceTemp!==null||d.operatingDays!==null||d.fuelPrice!==null||d.efficiencyPct!==null||d.diameterIn!==null||d.lengthM!==null||d.depthM!==null||d.notes)}
+function getSettingsFromForm(){return {residualPct:numOrNull($('residualPct').value),capexRate:numOrNull($('capexRate').value),lifeYears:numOrNull($('lifeYears').value),discountPct:numOrNull($('discountPct').value),carbonPrice:numOrNull($('carbonPrice').value),emissionFactor:numOrNull($('emissionFactor').value)}}
+function setSettingsToForm(){for(const k of Object.keys(DEFAULT_SETTINGS)){if($(k))$(k).value=state.settings[k]}}
+function setReportMetaToForm(){for(const id of REPORT_IDS){const key=id.replace(/^report/,'').replace(/^./,x=>x.toLowerCase());if($(id))$(id).value=state.reportMeta?.[key]??DEFAULT_REPORT[key]??''}}
+function readReportMetaFromForm(){return {project:($('reportProject')?.value||'').trim()||'Thermal Insulation Assessment',site:($('reportSite')?.value||'').trim(),preparedBy:($('reportPreparedBy')?.value||'').trim(),docRef:($('reportDocRef')?.value||'').trim()||'ISO-12241-TIR-001',standard:($('reportStandard')?.value||'').trim()||'ISO 12241:2022',conditions:($('reportConditions')?.value||'').trim()||'Steady-state hot-service screening; surface heat loss and thermal resistance evaluation per ISO 12241:2022.'}}
+function renderReportHeader(){ renderIsoReport(); }
+function validateSettings(s){const errs=[];if(!Number.isFinite(s.residualPct)||s.residualPct<0||s.residualPct>100)errs.push('Residual heat loss must be between 0% and 100%.');if(!Number.isFinite(s.capexRate)||s.capexRate<0)errs.push('CAPEX rate must be zero or greater.');if(!Number.isFinite(s.lifeYears)||s.lifeYears<1||s.lifeYears>50)errs.push('Project life must be between 1 and 50 years.');if(!Number.isFinite(s.discountPct)||s.discountPct<0||s.discountPct>100)errs.push('Discount rate must be between 0% and 100%.');if(!Number.isFinite(s.carbonPrice)||s.carbonPrice<0)errs.push('Carbon price must be zero or greater.');if(!Number.isFinite(s.emissionFactor)||s.emissionFactor<0)errs.push('Gas emission factor must be zero or greater.');return errs}
+function validateItem(i){const e=[];if(!i.equipmentId)e.push(['equipmentId','Enter an equipment ID.']);if(!i.description)e.push(['description','Enter a process description.']);if(!i.equipmentType)e.push(['equipmentType','Select an equipment type.']);if(!['Cylindrical','Rectangular','Shell & Tube'].includes(i.shape))e.push(['shape','Select a valid equipment shape.']);
+ const req=[['processTemp','Process temperature'],['ambientTemp','Ambient temperature'],['surfaceTemp','Outer surface temperature'],['operatingDays','Operating days'],['fuelPrice','Fuel gas price'],['efficiencyPct','Fuel-to-useful-heat efficiency'],['diameterIn','Diameter / width'],['lengthM','Length / height']];
+ for(const [k,label] of req)if(i[k]===null||!Number.isFinite(i[k]))e.push([({processTemp:'processTemp',ambientTemp:'ambientTemp',surfaceTemp:'surfaceTemp',operatingDays:'operatingDays',fuelPrice:'fuelPrice',efficiencyPct:'efficiency',diameterIn:'diameter',lengthM:'length'})[k],`${label} is required and must be numeric.`]);
+ if(i.efficiencyPct!==null&&(i.efficiencyPct<=0||i.efficiencyPct>100))e.push(['efficiency','Efficiency must be greater than 0% and no more than 100%.']);
+ if(i.operatingDays!==null&&(i.operatingDays<0||i.operatingDays>366))e.push(['operatingDays','Operating days must be from 0 to 366.']);
+ if(i.fuelPrice!==null&&i.fuelPrice<0)e.push(['fuelPrice','Fuel gas price cannot be negative.']);
+ if(i.diameterIn!==null&&i.diameterIn<=0)e.push(['diameter','Diameter / width must be greater than zero.']);
+ if(i.lengthM!==null&&i.lengthM<=0)e.push(['length','Length / height must be greater than zero.']);
+ if(i.thicknessIn===null)e.push(['thickness','Enter current insulation thickness; enter 0 if none.']);
+ if(i.thicknessIn!==null&&i.thicknessIn<0)e.push(['thickness','Thickness cannot be negative.']);
+ if(i.depthM!==null&&i.depthM<0)e.push(['depth','Depth cannot be negative.']);
+ if(i.shape==='Rectangular'&&(i.depthM===null||i.depthM<=0))e.push(['depth','Depth must be greater than zero for rectangular equipment.']);
+ if(i.status==='Installed'&&(!i.insulationType||i.insulationType==='None'))e.push(['insulationType','Select an insulation material for installed insulation.']);if(i.status==='Installed'&&i.insulationType&&!MATERIALS.includes(i.insulationType))e.push(['insulationType','This insulation material is not in the reference table; use a listed material or verify its properties before assessment.']);
+ if(i.status==='Installed'&&(i.thicknessIn===null||i.thicknessIn<=0))e.push(['thickness','Installed insulation requires a thickness greater than zero.']);
+ if(i.processTemp!==null&&i.ambientTemp!==null&&i.processTemp<=i.ambientTemp)e.push(['processTemp','This fuel-cost model assumes hot service: process temperature must exceed ambient.']);
+ if(i.surfaceTemp!==null&&i.ambientTemp!==null&&i.surfaceTemp<=i.ambientTemp)e.push(['surfaceTemp','This heat-transfer method assumes the outer surface is hotter than ambient. Cold-service calculations need a different model.']);
+ if(i.processTemp!==null&&i.surfaceTemp!==null&&i.surfaceTemp>i.processTemp)e.push(['surfaceTemp','Outer surface temperature cannot exceed process temperature for this hot-service model.']);
+ if(i.status==='Installed'&&i.processTemp!==null&&i.surfaceTemp!==null&&i.processTemp<=i.surfaceTemp)e.push(['surfaceTemp','For installed insulation, process temperature must be above the outer surface temperature.']);
+ if(i.status&&!['Installed','Not Installed','Removed','Damaged'].includes(i.status))e.push(['status','Select a valid insulation status.']);
+ return e;
+}
+function getReferenceK(material,tmean){const bands=K_TABLE[material];if(!bands)return {value:null,band:null,warning:'No reference k value for this insulation material.'};let chosen=bands[0];for(const b of bands){if(b[0]<=tmean)chosen=b;else break;}let warning='';const max=bands[bands.length-1][0];if(tmean>max)warning=`Mean temperature ${fmt(tmean,1)}°C exceeds the highest tabulated band for ${material} (${max}°C); last listed value is used—confirm material rating.`;if(tmean<0)warning=`Mean temperature is below the lowest reference band (0°C); 0°C value is used—confirm applicability.`;return {value:chosen[1],band:chosen[0],warning};}
+function annuityFactor(n,r){if(r===0)return n;return (1-Math.pow(1+r,-n))/r;}
+function calculate(i,s=state.settings){
+ const process=i.processTemp,ambient=i.ambientTemp,surface=i.surfaceTemp,days=i.operatingDays,gas=i.fuelPrice,eff=i.efficiencyPct/100;
+ const t=i.thicknessIn*.0254,d=i.diameterIn*.0254,len=i.lengthM,depth=i.depthM||0;
+ const area=i.shape==='Rectangular'?2*(d*len+d*depth+len*depth):Math.PI*d*len;
+ const shapeFactor=i.shape==='Rectangular'?1.2:(i.shape==='Shell & Tube'?1.15:1);
+ const delta=surface-ambient;
+ const hc=(i.shape==='Rectangular'?1.32*Math.pow(delta/len,.25):1.32*Math.pow(delta/d,.25));
+ const hr=.95*5.67e-8*(Math.pow(surface+273,4)-Math.pow(ambient+273,4))/delta;
+ const heatFlux=(hc+hr)*delta*shapeFactor*(i.status==='Installed'?1:1.5);
+ const convQ=hc*area*delta;
+ const radQ=hr*area*delta;
+ const totalW=convQ+radQ;
+ const lossKW=totalW/1000;
+ let apparentK=null,tMean=null,ref=null,conductionQ=0,thermalRating='N/A';
+ if(i.status==='Installed'){
+   if(i.shape==='Rectangular')apparentK=(lossKW*1000*t)/(area*(process-surface));
+   else apparentK=(lossKW*1000*Math.log((d+2*t)/d))/(2*Math.PI*len*(process-surface));
+   tMean=(process+surface)/2;ref=getReferenceK(i.insulationType,tMean);
+   if(ref.value!==null){if(apparentK<=.8*ref.value)thermalRating='EXCELLENT';else if(apparentK<=ref.value)thermalRating='GOOD';else if(apparentK<=1.2*ref.value)thermalRating='FAIR';else if(apparentK<=2*ref.value)thermalRating='DEGRADED';else thermalRating='FAILED';}
+   if(i.shape==='Rectangular')conductionQ=(apparentK*area*(process-surface))/t;
+   else conductionQ=(2*Math.PI*apparentK*len*(process-surface))/Math.log((d+2*t)/d);
+ }
+ const hours=days*24;
+ const fuelCostKwh=gas/(293.071*eff);
+ const annualCost=lossKW*hours*fuelCostKwh;
+ const actionCandidate=['Not Installed','Removed','Damaged'].includes(i.status);
+ const savingsPct=actionCandidate?(100-s.residualPct):0;
+ const savings=annualCost*savingsPct/100;
+ const annualGHG=lossKW*hours*s.emissionFactor/eff;
+ const avoidedGHG=annualGHG*savingsPct/100;
+ const capex=actionCandidate?area*s.capexRate:0;
+ const payback=savings>0?capex/savings:null;
+ const simpleROI=capex>0?savings/capex*100:0;
+ const r=s.discountPct/100,life=Math.round(s.lifeYears),af=annuityFactor(life,r);
+ const energyNPV=-capex+savings*af;
+ const annualCarbonValue=avoidedGHG/1000*s.carbonPrice;
+ const carbonNPV=energyNPV+annualCarbonValue*af;
+ let verdict='';
+ if(i.status==='Installed'){
+   if(ref?.value==null)verdict='REVIEW MATERIAL DATA';
+   else if(apparentK<=ref.value)verdict='PASS';else if(apparentK<=1.2*ref.value)verdict='CAUTION - Monitor';else if(apparentK<=2*ref.value)verdict='DEGRADED - Consider Replacement';else verdict='FAILED - Replace Immediately';
+ }else if(i.status==='Damaged')verdict='REPAIR/REPLACE';else verdict='INSTALL INSULATION';
+ let priority='';
+ if(verdict==='INSTALL INSULATION')priority='URGENT · Immediate action';else if(verdict==='REPAIR/REPLACE')priority='HIGH · Schedule repair';else if(verdict==='FAILED - Replace Immediately')priority='HIGH · Replace ASAP';else if(verdict==='DEGRADED - Consider Replacement')priority='MEDIUM · Plan replacement';else if(verdict==='CAUTION - Monitor')priority='LOW · Monitor';else if(verdict==='PASS')priority='OK · No action';else priority='REVIEW · Check material data';
+ let risk='';if(i.status==='Installed'){if(ref?.value==null)risk='REVIEW MATERIAL DATA';else if(apparentK<=1.2*ref.value)risk='LOW RISK';else if(apparentK<=2*ref.value)risk='MEDIUM RISK';else risk='HIGH RISK';}else if(i.status==='Damaged')risk='HIGH RISK';else risk='URGENT RISK';
+ const moistureRisk=surface<45?'LOW':surface<55?'MEDIUM':'HIGH';
+ const surfaceFlag=surface>60?'Personnel safety review flag':surface>50?'Moderate surface-temperature flag':'No surface-temperature flag';
+ const maint=i.status!=='Installed'?'N/A':(ref?.value==null?'Review material data':(apparentK<=ref.value?'Every 3 years':apparentK<=1.5*ref.value?'Every 2 years':'Annual'));
+ const contractor=['Not Installed','Removed'].includes(i.status)?'Full EPC - Design + Install':(i.status==='Damaged'?'Repair / replacement':'Assessment only');
+ let guarantee='Define during design';if(i.status==='Installed'&&ref?.value!=null)guarantee=apparentK<=ref.value?'≥ 95% efficiency':apparentK<=1.5*ref.value?'≥ 85% efficiency':'≥ 75% efficiency';
+ let phase=savings>50000?'Capital Plan':savings>10000?'Medium Priority':savings>0?'Routine Maintenance':'Monitor';
+ let budget=phase==='Capital Plan'?'Strategic Capex':phase==='Medium Priority'?'Operational Capex':'Maintenance Budget';
+ let timeline=i.status==='Installed'?0:(['Not Installed','Removed'].includes(i.status)?30:(i.status==='Damaged'?7:0));
+ const warnings=[];if(ref?.warning)warnings.push(ref.warning);if(surface>60)warnings.push('This surface-temperature flag is not a personnel exposure limit; perform a site safety assessment.');if(i.insulationType==='None'&&i.status!=='Installed')warnings.push('Insulation type is not installed; savings use the fixed/selected residual-loss assumption, not a proposed insulation design.');if(s.emissionFactor===.181)warnings.push('The default GHG factor 0.181 kg/kWh must be confirmed before reporting.');
+ return {thicknessM:t,diameterM:d,area,shapeFactor,hc,hr,heatFlux,conductionQ,convQ,radQ,totalW,lossKW,apparentK,tMean,refK:ref?.value??null,refBand:ref?.band??null,refWarning:ref?.warning??'',thermalRating,hours,fuelCostKwh,annualCost,savingsPct,savings,annualGHG,avoidedGHG,carbonPrice:s.carbonPrice,annualCarbonValue,capex,payback,simpleROI,energyNPV,carbonNPV,verdict,priority,risk,moistureRisk,surfaceFlag,maint,contractor,guarantee,phase,budget,timeline,warnings,actionCandidate};
+}
+function escSelector(id){return id.replace(/[^a-zA-Z0-9_-]/g,'\\$&')}
+function showErrors(errors){const box=$('errorBox');document.querySelectorAll('.field input,.field select').forEach(el=>el.removeAttribute('aria-invalid'));if(!errors.length){box.classList.remove('show');box.innerHTML='';return}for(const [id]of errors){if($(id))$(id).setAttribute('aria-invalid','true')}box.innerHTML='<strong>Please fix these inputs:</strong><ul>'+errors.map(x=>`<li>${esc(x[1])}</li>`).join('')+'</ul>';box.classList.add('show');const first=$(errors[0][0]);if(first)first.focus({preventScroll:true});}
+function badgeClass(verdict){if(verdict.includes('INSTALL')||verdict.includes('REPAIR')||verdict.includes('FAILED'))return 'urgent';if(verdict.includes('CAUTION')||verdict.includes('DEGRADED'))return 'caution';if(verdict==='PASS')return 'good';return 'info'}
+function renderPreview(){const draft=readForm();const errors=validateItem(draft);const ready=errors.length===0;const box=$('livePreview');if(!ready){box.innerHTML='<div class="live-empty"><div class="empty-icon">◌</div>Enter the required operating and geometry data to preview calculated results.</div>';return}const c=calculate(draft,state.settings);box.innerHTML=`<div class="live-verdict ${badgeClass(c.verdict)}">${esc(c.verdict)}</div><div class="live-metrics"><div class="mini-metric"><span>Heat loss</span><strong>${fmt(c.lossKW,3)} kW</strong></div><div class="mini-metric"><span>Current annual cost</span><strong>${money(c.annualCost)}</strong></div><div class="mini-metric emphasis"><span>Potential savings / year</span><strong>${money(c.savings)}</strong></div><div class="mini-metric"><span>Estimated CAPEX</span><strong>${money(c.capex)}</strong></div><div class="mini-metric"><span>Simple payback</span><strong>${c.payback===null?'N/A':fmt(c.payback,2)+' yr'}</strong></div><div class="mini-metric"><span>Annual simple ROI</span><strong>${pct(c.simpleROI,1)}</strong></div></div><div class="live-note">${esc(c.priority)} · Estimated avoided emissions ${fmt(c.avoidedGHG,1)} kg CO₂e/year. Verify field data and the savings assumption.</div>`}
+function formatStatus(status){return status==='Installed'?'Installed':status}
+function queueHtml(){const items=state.items||[];$('queueCount').textContent=items.length?`${items.length} ${items.length===1?'item':'items'} saved in this assessment`:'No items added yet';$('heroCount').textContent=items.length;
+ if(!items.length){$('queueContent').innerHTML='<div class="queue-empty"><strong>Your assessment is empty</strong>Add and save an equipment item to build the list.</div>';return}
+ const rows=items.map(i=>{const c=calculate(i);return `<tr><td><div class="item-title">${esc(i.equipmentId)}</div><div class="item-sub">${esc(i.description)}</div></td><td>${esc(i.equipmentType)}</td><td><span class="badge ${badgeClass(c.verdict)}">${esc(c.verdict)}</span></td><td class="no-wrap">${money(c.annualCost)}</td><td class="no-wrap">${money(c.savings)}</td><td><div class="row-actions"><button class="btn btn-outline btn-sm" type="button" data-edit="${esc(i.uid)}">Edit</button><button class="btn btn-danger btn-sm" type="button" data-delete="${esc(i.uid)}" aria-label="Delete ${esc(i.equipmentId)}">Delete</button></div></td></tr>`}).join('');
+ $('queueContent').innerHTML=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Equipment</th><th>Type</th><th>Thermal verdict</th><th>Annual cost</th><th>Potential savings</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function setScreen(screen){state.screen=screen;saveState();$('entryView').hidden=screen!=='entry';$('summaryView').hidden=screen!=='summary';$('step1').className='step '+(screen==='entry'?'active':'done');$('step2').className='step '+(state.items.length?'done':'');
+  if ($('step2Count')) $('step2Count').textContent = state.items.length;$('step3').className='step '+(screen==='summary'?'active':'');if(screen==='summary')renderSummary();else{queueHtml();renderPreview()}window.scrollTo({top:0,behavior:'smooth'});}
+function resetDraft(){state.draft=emptyDraft();state.editingId=null;draftToForm(state.draft);$('formHeading').textContent='Add equipment item';$('addItemBtn').innerHTML='＋ Add item &amp; add another';showErrors([]);renderPreview();saveState()}
+function saveCurrentItem(){const draft=readForm();const errors=validateItem(draft);if(errors.length){showErrors(errors);return false}const uid=state.editingId||((typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():`item-${Date.now()}-${Math.random().toString(16).slice(2)}`);const item={...draft,uid};if(state.editingId){const idx=state.items.findIndex(x=>x.uid===state.editingId);if(idx>=0)state.items[idx]=item;else state.items.push(item);showToast('Changes saved.')}else{state.items.push(item);showToast(`${item.equipmentId} added to the assessment.`)}state.editingId=null;state.draft=emptyDraft();draftToForm(state.draft);$('formHeading').textContent='Add equipment item';$('addItemBtn').innerHTML='＋ Add item &amp; add another';showErrors([]);saveState();queueHtml();renderPreview();return true}
+function startEditing(uid){const item=state.items.find(x=>x.uid===uid);if(!item)return;state.editingId=uid;state.draft=formToDraftObject(item);draftToForm(state.draft);$('formHeading').textContent=`Edit item · ${item.equipmentId}`;$('addItemBtn').textContent='Save changes';setScreen('entry');$('equipmentId').focus({preventScroll:true});}
+function deleteItem(uid){const item=state.items.find(x=>x.uid===uid);if(!item)return;askConfirm('Remove equipment item?',`Remove ${item.equipmentId} from this assessment?`,'Remove item',()=>{state.items=state.items.filter(x=>x.uid!==uid);if(state.editingId===uid)resetDraft();saveState();queueHtml();renderPreview();showToast('Item removed.')})}
+function startNew(){
+  try {
+    localStorage.clear();
+    sessionStorage.clear();
+  } catch(e) {}
+  
+  state = {
+    settings: { ...DEFAULT_SETTINGS },
+    reportMeta: { ...DEFAULT_REPORT },
+    items: [],
+    draft: emptyDraft(),
+    editingId: null,
+    screen: 'entry',
+    assessmentName: 'Insulation evaluation'
+  };
+  
+  setSettingsToForm();
+  setReportMetaToForm();
+  
+  if ($('setupProject')) $('setupProject').value = 'Thermal Insulation Assessment';
+  if ($('setupReporter')) $('setupReporter').value = '';
+  if ($('setupSite')) $('setupSite').value = '';
+  if ($('setupDocRef')) $('setupDocRef').value = 'ISO-12241-TIR-001';
+  if ($('reportProject')) $('reportProject').value = 'Thermal Insulation Assessment';
+  if ($('reportPreparedBy')) $('reportPreparedBy').value = '';
+  if ($('reportSite')) $('reportSite').value = '';
+  if ($('reportDocRef')) $('reportDocRef').value = 'ISO-12241-TIR-001';
+  
+  for (const id of INPUT_IDS) {
+    const el = $(id);
+    if (!el) continue;
+    if (el.tagName === 'SELECT') {
+      el.selectedIndex = 0;
+    } else {
+      el.value = '';
+    }
+  }
+  
+  if ($('operatingDays')) $('operatingDays').value = '365';
+  if ($('fuelPrice')) $('fuelPrice').value = '5';
+  if ($('efficiency')) $('efficiency').value = '80';
+  if ($('status')) $('status').value = 'Uninsulated';
+  if ($('shape')) $('shape').value = 'Cylindrical';
+  
+  if ($('formHeading')) $('formHeading').textContent = 'Add equipment item';
+  if ($('addItemBtn')) $('addItemBtn').innerHTML = '＋ Add item &amp; add another';
+  
+  showErrors([]);
+  if ($('excelFileInput')) $('excelFileInput').value = '';
+  if ($('importStatus')) {
+    $('importStatus').textContent = '';
+    $('importStatus').className = 'import-status';
+  }
+  if ($('importPreview')) $('importPreview').hidden = true;
+  
+  queueHtml();
+  renderPreview();
+  renderIsoReport();
+  setScreen('entry');
+  
+  if ($('heroCount')) $('heroCount').textContent = '0';
+  if ($('step2Count')) $('step2Count').textContent = '0';
+  
+  showToast('New assessment started. All data reset.');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function itemCalculations(i){return calculate(i,state.settings)}
+function detailCell(label,value,cls=''){return `<div class="detail-item ${cls}"><span>${esc(label)}</span><strong>${esc(value)}</strong></div>`}
+function detailBlock(i,c){const s=state.settings;const g=[];
+ g.push(detailCell('Equipment ID',i.equipmentId));g.push(detailCell('Process description',i.description));g.push(detailCell('Equipment type / shape',`${i.equipmentType} · ${i.shape}`));g.push(detailCell('Status / insulation',`${i.status} · ${i.insulationType}`));g.push(detailCell('Process / ambient / surface temp',`${fmt(i.processTemp,1)} / ${fmt(i.ambientTemp,1)} / ${fmt(i.surfaceTemp,1)} °C`));g.push(detailCell('Operating days / hours',`${fmt(i.operatingDays,0)} days · ${fmt(c.hours,0)} h/y`));g.push(detailCell('Fuel price / efficiency',`${money(i.fuelPrice,2)}/MMBtu · ${pct(i.efficiencyPct,1)}`));g.push(detailCell('Current thickness / diameter',`${fmt(i.thicknessIn,3)} in · ${fmt(i.diameterIn,3)} in`));g.push(detailCell('Length / depth',`${fmt(i.lengthM,3)} m · ${i.depthM===null?'—':fmt(i.depthM,3)+' m'}`));g.push(detailCell('Converted thickness / diameter',`${fixed(c.thicknessM,4)} m · ${fixed(c.diameterM,4)} m`));g.push(detailCell('Surface area / shape factor',`${fmt(c.area,3)} m² · ${fmt(c.shapeFactor,2)}`));g.push(detailCell('Convection coefficient hc',`${fmt(c.hc,3)} W/m²·K`));g.push(detailCell('Radiation coefficient hr',`${fmt(c.hr,3)} W/m²·K`));g.push(detailCell('Total heat flux',`${fmt(c.heatFlux,2)} W/m²`));g.push(detailCell('Conduction Q',`${fmt(c.conductionQ,2)} W`));g.push(detailCell('Convection Q',`${fmt(c.convQ,2)} W`));g.push(detailCell('Radiation Q',`${fmt(c.radQ,2)} W`));g.push(detailCell('Total heat lost',`${fmt(c.totalW,2)} W · ${fmt(c.lossKW,4)} kW`));g.push(detailCell('Apparent k',c.apparentK===null?'N/A (not currently installed)':`${fmt(c.apparentK,5)} W/m·K`));g.push(detailCell('Mean temperature / reference k',c.tMean===null?'N/A':`${fmt(c.tMean,1)}°C · ${c.refK===null?'N/A':fmt(c.refK,3)+' W/m·K @ '+c.refBand+'°C'}`,c.refWarning?'warn':''));g.push(detailCell('Thermal verdict / priority',`${c.verdict} · ${c.priority}`,badgeClass(c.verdict)==='urgent'?'warn':''));g.push(detailCell('Thermal rating',c.thermalRating));g.push(detailCell('Current annual loss cost',money(c.annualCost)+'/year'));g.push(detailCell('Potential annual energy savings',money(c.savings)+'/year','green'));g.push(detailCell('Estimated project CAPEX',money(c.capex),c.actionCandidate?'warn':''));g.push(detailCell('Simple payback',c.payback===null?'N/A':`${fmt(c.payback,2)} years`));g.push(detailCell('Annual simple ROI',pct(c.simpleROI,1)));g.push(detailCell('Energy-only NPV',money(c.energyNPV),''));g.push(detailCell('Carbon-inclusive NPV',money(c.carbonNPV),'warn'));g.push(detailCell('Current heat-loss GHG',`${fmt(c.annualGHG,1)} kg CO₂e/year`));g.push(detailCell('Estimated avoided GHG',`${fmt(c.avoidedGHG,1)} kg CO₂e/year`,'green'));g.push(detailCell('Annual shadow carbon value',money(c.annualCarbonValue)+'/year (non-cash)'));
+ g.push(detailCell('Risk assessment',c.risk,c.risk.includes('URGENT')||c.risk.includes('HIGH')?'warn':''));g.push(detailCell('Moisture ingress screen',c.moistureRisk));g.push(detailCell('Surface-temperature screen',c.surfaceFlag,c.surfaceFlag.includes('review')?'warn':''));g.push(detailCell('Maintenance schedule',c.maint));g.push(detailCell('Contractor scope cue',c.contractor));g.push(detailCell('Performance guarantee cue',c.guarantee));g.push(detailCell('Project phase / budget pool',`${c.phase} · ${c.budget}`));g.push(detailCell('Implementation timeline cue',`${fmt(c.timeline,0)} days`));g.push(detailCell('Notes',i.notes||'—'));
+ let warnings=c.warnings?.length?`<div class="summary-caveat"><strong>Review flags:</strong> ${c.warnings.map(esc).join(' ')}</div>`:'';
+ return `<div class="detail-grid">${g.join('')}</div>${i.notes?`<div class="summary-caveat"><strong>Notes:</strong> ${esc(i.notes)}</div>`:''}${warnings}`;
+}
+
+
+function syncSetupAndReportFields(){
+  const pairs = [
+    ['setupProject', 'reportProject'],
+    ['setupReporter', 'reportPreparedBy'],
+    ['setupSite', 'reportSite'],
+    ['setupDocRef', 'reportDocRef']
+  ];
+  for(const [sId, rId] of pairs){
+    const sEl = $(sId), rEl = $(rId);
+    if(sEl && rEl){
+      sEl.addEventListener('input', () => {
+        rEl.value = sEl.value;
+        state.reportMeta = readReportMetaFromForm();
+        saveState();
+        renderIsoReport();
+      });
+      rEl.addEventListener('input', () => {
+        sEl.value = rEl.value;
+        state.reportMeta = readReportMetaFromForm();
+        saveState();
+        renderIsoReport();
+      });
+    }
+  }
+}
+
+function renderIsoReport(){
+  const m = readReportMetaFromForm();
+  state.reportMeta = m;
+  const today = new Date().toLocaleDateString('en-GB');
+  
+  if ($('reportDateDisplay')) $('reportDateDisplay').value = today;
+  if ($('summaryTitle')) $('summaryTitle').textContent = m.project;
+  
+  // Header box
+  if ($('isoPrintProjectName')) $('isoPrintProjectName').textContent = m.project;
+  if ($('isoPrintFacility')) $('isoPrintFacility').textContent = 'Facility / Unit: ' + (m.site || 'General Facility');
+  if ($('isoPrintDocRef')) $('isoPrintDocRef').textContent = m.docRef;
+  if ($('isoPrintDate')) $('isoPrintDate').textContent = today;
+  
+  // Control table
+  if ($('isoCtrlProject')) $('isoCtrlProject').textContent = m.project;
+  if ($('isoCtrlReporter')) $('isoCtrlReporter').textContent = m.preparedBy || 'Not specified (Engineering Assessor)';
+  if ($('isoCtrlSite')) $('isoCtrlSite').textContent = m.site || 'Not specified';
+  if ($('isoCtrlStandard')) $('isoCtrlStandard').textContent = m.standard;
+  if ($('isoCtrlConditions')) $('isoCtrlConditions').textContent = m.conditions;
+  
+  // Sign off
+  if ($('isoSignReporter')) $('isoSignReporter').textContent = m.preparedBy || 'Engineering Assessor';
+  if ($('isoSignDate1')) $('isoSignDate1').textContent = 'Date: ' + today;
+  if ($('isoSignDate2')) $('isoSignDate2').textContent = 'Date: ' + today;
+  if ($('isoSignDate3')) $('isoSignDate3').textContent = 'Date: ' + today;
+  
+  // KPI grid & items
+  const items = state.items;
+  if (!items || !items.length) return;
+  const rows = items.map(i => ({ i, c: itemCalculations(i) }));
+  const sums = rows.reduce((a, { c }) => {
+    a.heatLoss += c.lossKW;
+    a.cost += c.annualCost;
+    a.savings += c.savings;
+    a.capex += c.capex;
+    a.ghg += c.annualGHG;
+    a.avoided += c.avoidedGHG;
+    a.urgent += c.priority.startsWith('URGENT') ? 1 : 0;
+    a.high += c.priority.startsWith('HIGH') ? 1 : 0;
+    a.actions += c.actionCandidate ? 1 : 0;
+    return a;
+  }, { heatLoss: 0, cost: 0, savings: 0, capex: 0, ghg: 0, avoided: 0, urgent: 0, high: 0, actions: 0 });
+  
+  const portPayback = sums.savings > 0 ? (sums.capex / sums.savings).toFixed(2) + ' yrs' : 'N/A';
+  
+  if ($('isoKpiGrid')) {
+    $('isoKpiGrid').innerHTML = `
+      <div class="iso-kpi-card"><span>Evaluated Equipment</span><strong>${items.length} Items</strong><small>${sums.actions} Action Candidates</small></div>
+      <div class="iso-kpi-card"><span>Baseline Heat Loss</span><strong>${sums.heatLoss.toFixed(2)} kW</strong><small>${(sums.heatLoss * 8.76).toFixed(0)} MWh/yr</small></div>
+      <div class="iso-kpi-card highlight"><span>Potential Savings</span><strong>$${Math.round(sums.savings).toLocaleString()}/yr</strong><small>Fuel Cost Reduction</small></div>
+      <div class="iso-kpi-card"><span>Estimated CAPEX</span><strong>$${Math.round(sums.capex).toLocaleString()}</strong><small>Simple Payback: ${portPayback}</small></div>
+    `;
+  }
+  
+  if ($('isoBasisTable')) {
+    const s = state.settings;
+    $('isoBasisTable').innerHTML = `
+      <tbody>
+        <tr>
+          <td style="width:25%;"><strong>Residual Heat Loss Rate:</strong> ${s.residualPct}%</td>
+          <td style="width:25%;"><strong>Insulation CAPEX Proxy:</strong> $${s.capexRate}/m²</td>
+          <td style="width:25%;"><strong>Project Assessment Life:</strong> ${s.lifeYears} Years</td>
+          <td style="width:25%;"><strong>Emission Factor:</strong> ${s.emissionFactor} kg CO₂/kWh</td>
+        </tr>
+      </tbody>
+    `;
+  }
+  
+  if ($('isoResultsTableBody')) {
+    $('isoResultsTableBody').innerHTML = rows.map(({ i, c }, idx) => `
+      <tr>
+        <td style="text-align:center; font-weight:700;">${idx + 1}</td>
+        <td><strong>${esc(i.equipmentId)}</strong></td>
+        <td>${esc(i.description)}<br><small style="color:#64748b;">${esc(i.equipmentType)} (${esc(i.shape)})</small></td>
+        <td>${i.processTemp}°C / ${i.ambientTemp}°C<br><small style="color:#64748b;">${esc(formatStatus(i.status))}</small></td>
+        <td style="text-align:right;">${c.area.toFixed(2)}</td>
+        <td style="text-align:right;"><strong>${c.lossKW.toFixed(2)}</strong></td>
+        <td style="text-align:right; color:#15803d; font-weight:700;">$${Math.round(c.savings).toLocaleString()}/yr</td>
+        <td><strong>${c.payback === null ? 'N/A' : c.payback.toFixed(1) + ' y'}</strong><br><span class="badge ${badgeClass(c.verdict)}">${esc(c.verdict)}</span></td>
+      </tr>
+    `).join('');
+  }
+}
+
+function renderSummary(){
+renderIsoReport();
+renderReportHeader();const items=state.items;if(!items.length){setScreen('entry');return}const rows=items.map(i=>({i,c:itemCalculations(i)}));const sums=rows.reduce((a,{c})=>{a.area+=c.area;a.heatLoss+=c.lossKW;a.cost+=c.annualCost;a.savings+=c.savings;a.capex+=c.capex;a.ghg+=c.annualGHG;a.avoided+=c.avoidedGHG;a.energyNPV+=c.energyNPV;a.carbonNPV+=c.carbonNPV;a.urgent+=c.priority.startsWith('URGENT')?1:0;a.high+=c.priority.startsWith('HIGH')?1:0;a.monitor+=c.priority.startsWith('LOW')?1:0;a.installed+=c.actionCandidate?0:1;a.actions+=c.actionCandidate?1:0;a.hotFlag+=c.surfaceFlag.includes('review')?1:0;return a},{area:0,heatLoss:0,cost:0,savings:0,capex:0,ghg:0,avoided:0,energyNPV:0,carbonNPV:0,urgent:0,high:0,monitor:0,installed:0,actions:0,hotFlag:0});
+ const portPayback=sums.savings>0?sums.capex/sums.savings:null;const portROI=sums.capex>0?sums.savings/sums.capex*100:0;
+ $('summarySubtitle').textContent=`${items.length} ${items.length===1?'item':'items'} · ${fmt(sums.actions,0)} insulation action candidate(s) · editable screening assumptions applied`;
+ const cards=[['Equipment items',fmt(items.length,0),'Saved in this assessment',''],['Current heat loss',`${fmt(sums.heatLoss,2)} kW`,'Sum of current item screens','blue'],['Current annual energy cost',money(sums.cost),`Fuel cost basis · ${fmt(state.settings.lifeYears,0)}-year screen`,''],['Potential energy savings',money(sums.savings),`${fmt(100-state.settings.residualPct,0)}% reduction assumption for action items`,'green'],['Estimated CAPEX',money(sums.capex),`${money(state.settings.capexRate,0)}/m² area proxy · action items only`,'amber'],['Avoided GHG estimate',`${fmt(sums.avoided,0)} kg/y`,'Separate estimated benefit; not verified','blue'],['Energy-only NPV',money(sums.energyNPV),`Discount rate ${pct(state.settings.discountPct,1)}`,''],['Carbon-inclusive NPV',money(sums.carbonNPV),'Shadow value shown separately; non-cash','amber']];
+ $('summaryCards').innerHTML=cards.map(([l,v,h,cl])=>`<div class="summary-card ${cl}"><span>${esc(l)}</span><strong>${esc(v)}</strong><small>${esc(h)}</small></div>`).join('');
+ $('portfolioScreen').innerHTML=`<div class="priority-row"><span>Urgent installation items</span><strong>${fmt(sums.urgent,0)}</strong></div><div class="priority-row"><span>High-priority repair / replacement</span><strong>${fmt(sums.high,0)}</strong></div><div class="priority-row"><span>Monitoring items</span><strong>${fmt(sums.monitor,0)}</strong></div><div class="priority-row"><span>Items with potential action</span><strong>${fmt(sums.actions,0)} / ${fmt(items.length,0)}</strong></div><div class="priority-row"><span>Energy-only simple payback</span><strong>${portPayback===null?'N/A':fmt(portPayback,2)+' years'}</strong></div><div class="priority-row"><span>Energy-only annual ROI</span><strong>${pct(portROI,1)}</strong></div><div class="priority-row"><span>Current heat-loss emissions</span><strong>${fmt(sums.ghg,0)} kg/y</strong></div><div class="priority-row"><span>Surface-temp flags &gt;50°C</span><strong>${rows.filter(x=>x.c.surfaceFlag!=='No surface-temperature flag').length}</strong></div>`;
+ $('resultList').innerHTML=rows.map(({i,c},idx)=>`<details class="result-card" ${idx===0?'open':''}><summary><div class="result-summary-name"><strong>${esc(i.equipmentId)} <span class="badge ${badgeClass(c.verdict)}">${esc(c.verdict)}</span></strong><small>${esc(i.description)} · ${esc(i.equipmentType)} · ${esc(formatStatus(i.status))}</small></div><div class="result-summary-metrics"><span>Loss <b>${fmt(c.lossKW,3)} kW</b></span><span>Savings <b>${money(c.savings)}/y</b></span><span>Payback <b>${c.payback===null?'N/A':fmt(c.payback,2)+' y'}</b></span></div></summary>${detailBlock(i,c)}</details>`).join('');
+}
+function csvRecords(){const rows=[];for(const i of state.items){const c=calculate(i,state.settings);rows.push({
+ 'Equipment ID':i.equipmentId,'Process description':i.description,'Equipment type':i.equipmentType,'Shape':i.shape,'Status':i.status,'Insulation type':i.insulationType,'Process temperature (°C)':i.processTemp,'Ambient temperature (°C)':i.ambientTemp,'Outer surface temperature (°C)':i.surfaceTemp,'Operating days':i.operatingDays,'Fuel gas price ($/MMBtu)':i.fuelPrice,'Efficiency (%)':i.efficiencyPct,'Thickness (in)':i.thicknessIn,'Diameter/width (in)':i.diameterIn,'Length/height (m)':i.lengthM,'Depth (m)':i.depthM,'Notes':i.notes,'Verdict':c.verdict,'Priority':c.priority,'Annual cost ($/y)':c.annualCost,'Potential savings ($/y)':c.savings,'Thickness (m)':c.thicknessM,'Diameter/width (m)':c.diameterM,'Surface area (m²)':c.area,'Shape factor':c.shapeFactor,'Convection hc (W/m²·K)':c.hc,'Radiation hr (W/m²·K)':c.hr,'Total heat flux (W/m²)':c.heatFlux,'Conduction Q (W)':c.conductionQ,'Convection Q (W)':c.convQ,'Radiation Q (W)':c.radQ,'Total Q lost (W)':c.totalW,'Total Q lost (kW)':c.lossKW,'Apparent k (W/m·K)':c.apparentK,'Mean temperature (°C)':c.tMean,'Reference k (W/m·K)':c.refK,'Reference k band (°C)':c.refBand,'Operating hours':c.hours,'Fuel cost ($/kWh useful)':c.fuelCostKwh,'Thermal rating':c.thermalRating,'GHG emissions (kg/y)':c.annualGHG,'Estimated avoided GHG (kg/y)':c.avoidedGHG,'Shadow carbon price ($/tCO₂e)':c.carbonPrice,'Energy-only NPV ($)':c.energyNPV,'Carbon-inclusive NPV ($ shadow value)':c.carbonNPV,'Simple payback (years)':c.payback,'Annual simple ROI (%)':c.simpleROI,'Risk assessment':c.risk,'Moisture ingress risk screen':c.moistureRisk,'Surface-temperature screen':c.surfaceFlag,'Maintenance schedule':c.maint,'Contractor requirements cue':c.contractor,'Performance guarantee cue':c.guarantee,'Project phase':c.phase,'CAPEX budget pool':c.budget,'Implementation timeline (days)':c.timeline});}return rows}
+function download(filename,contents,type){const blob=new Blob([contents],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function exportCSV(){const rows=csvRecords();if(!rows.length)return;const keys=Object.keys(rows[0]);const q=v=>`"${String(v??'').replaceAll('"','""')}"`;const csv=[keys.map(q).join(','),...rows.map(r=>keys.map(k=>q(r[k])).join(','))].join('\r\n');download('insulation-assessment-summary.csv','\ufeff'+csv,'text/csv;charset=utf-8');showToast('CSV summary downloaded.')}
+function exportJSON(){const payload={title:'Thermal insulation evaluation',template:'Insulation_Input_Template.xlsx',exportedAt:new Date().toISOString(),settings:state.settings,items:state.items,calculated:csvRecords()};download('insulation-assessment-backup.json',JSON.stringify(payload,null,2),'application/json');showToast('JSON backup downloaded.')}
+function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2800)}
+let pendingConfirm=null;
+function askConfirm(title,message,label,action){pendingConfirm=action;$('confirmTitle').textContent=title;$('confirmMessage').textContent=message;$('confirmActionBtn').textContent=label;$('confirmModal').hidden=false;$('confirmActionBtn').focus()}
+function closeConfirm(){$('confirmModal').hidden=true;pendingConfirm=null}
+function completeConfirm(){const action=pendingConfirm;closeConfirm();if(action)action()}
+function populateSelects(){const type=$('equipmentType');type.innerHTML='<option value="">Select equipment type</option>'+TYPES.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');$('insulationType').innerHTML=MATERIALS.map(m=>`<option value="${esc(m)}">${m==='None'?'None / not installed':esc(m)}</option>`).join('');}
+function zipU32(dv,offset){return dv.getUint32(offset,true)}
+async function inflateRaw(bytes){if(typeof DecompressionStream==='undefined')throw new Error('This browser cannot read compressed Excel files. Open the calculator in a current version of Chrome, Edge, or Firefox.');const ds=new DecompressionStream('deflate-raw');const stream=new Blob([bytes]).stream().pipeThrough(ds);return new Uint8Array(await new Response(stream).arrayBuffer())}
+async function unzipExcel(arrayBuffer){const bytes=new Uint8Array(arrayBuffer),dv=new DataView(arrayBuffer);let eocd=-1;const min=Math.max(0,bytes.length-65557);for(let p=bytes.length-22;p>=min;p--){if(zipU32(dv,p)===0x06054b50){eocd=p;break}}if(eocd<0)throw new Error('The selected file is not a valid .xlsx ZIP package.');const count=dv.getUint16(eocd+10,true),dirOffset=zipU32(dv,eocd+16);let pos=dirOffset,total=0;const files=new Map(),decoder=new TextDecoder('utf-8');for(let n=0;n<count;n++){if(zipU32(dv,pos)!==0x02014b50)throw new Error('The Excel file has an unreadable ZIP directory.');const method=dv.getUint16(pos+10,true),compressedSize=zipU32(dv,pos+20),uncompressedSize=zipU32(dv,pos+24),nameLen=dv.getUint16(pos+28,true),extraLen=dv.getUint16(pos+30,true),commentLen=dv.getUint16(pos+32,true),localOffset=zipU32(dv,pos+42);const name=decoder.decode(bytes.subarray(pos+46,pos+46+nameLen));if(name.endsWith('/')){pos+=46+nameLen+extraLen+commentLen;continue}total+=uncompressedSize;if(uncompressedSize>25000000||total>80000000)throw new Error('The workbook expands beyond the safe import limit. Try a smaller .xlsx file.');if(zipU32(dv,localOffset)!==0x04034b50)throw new Error('The Excel file contains an invalid file entry.');const localNameLen=dv.getUint16(localOffset+26,true),localExtraLen=dv.getUint16(localOffset+28,true),start=localOffset+30+localNameLen+localExtraLen,compressed=bytes.subarray(start,start+compressedSize);let content;if(method===0)content=new Uint8Array(compressed);else if(method===8)content=await inflateRaw(compressed);else throw new Error(`Unsupported Excel ZIP compression method ${method}.`);files.set(name,content);pos+=46+nameLen+extraLen+commentLen}return files}
+function xmlElements(parent,name){let found=[];try{found=Array.from(parent.getElementsByTagNameNS('*',name))}catch{}if(!found.length&&parent.getElementsByTagName)found=Array.from(parent.getElementsByTagName(name));return found}
+function xmlDocument(files,path){const bytes=files.get(path);if(!bytes)throw new Error(`Workbook is missing ${path}.`);const text=new TextDecoder('utf-8').decode(bytes);const doc=new DOMParser().parseFromString(text,'application/xml');if(xmlElements(doc,'parsererror').length)throw new Error(`Could not parse ${path} in the Excel file.`);return doc}
+function resolveExcelTarget(target){let p=target.startsWith('/')?target.slice(1):`xl/${target}`;const stack=[];for(const part of p.split('/')){if(!part||part==='.')continue;if(part==='..')stack.pop();else stack.push(part)}return stack.join('/')}
+function excelColIndex(ref){const letters=(String(ref).match(/[A-Z]+/i)||['A'])[0].toUpperCase();let n=0;for(const ch of letters)n=n*26+ch.charCodeAt(0)-64;return n-1}
+function excelCellValue(cell,shared){const type=cell.getAttribute('t')||'';const v=xmlElements(cell,'v')[0]?.textContent??'';if(type==='s')return shared[Number(v)]??'';if(type==='inlineStr')return xmlElements(cell,'t').map(x=>x.textContent||'').join('');if(type==='str')return v;if(type==='e')return '';if(v==='')return '';const n=Number(v);return Number.isFinite(n)?n:v}
+function excelSheetRows(doc,shared){return xmlElements(doc,'row').map((row,ix)=>{const cells=[];const rnum=Number(row.getAttribute('r'))||ix+1;for(const cell of xmlElements(row,'c')){const ref=cell.getAttribute('r');if(!ref)continue;cells[excelColIndex(ref)]=excelCellValue(cell,shared)}return {rowNumber:rnum,cells}})}
+function normalizeHeader(v){return String(v??'').toLowerCase().replace(/[^a-z0-9]/g,'')}
+function findHeaderIndex(rows){for(let i=0;i<Math.min(rows.length,30);i++){const h=(rows[i].cells||[]).map(normalizeHeader);if(h.includes('equipmentid')&&h.some(x=>x.startsWith('processdescription')))return i}return -1}
+function excelNumber(v){if(v===null||v===undefined||String(v).trim()==='')return null;if(typeof v==='number')return Number.isFinite(v)?v:null;const s=String(v).trim().replace(/,/g,'');if(/^#|^n\/?a$/i.test(s))return null;const n=Number(s);return Number.isFinite(n)?n:null}
+function excelText(v){return v===null||v===undefined?'':String(v).trim()}
+function shapeName(v){const s=excelText(v).toLowerCase().replace(/[^a-z]/g,'');if(s==='cylindrical'||s==='cylinder')return 'Cylindrical';if(s==='rectangular'||s==='rectangle')return 'Rectangular';if(s.includes('shell')&&s.includes('tube'))return 'Shell & Tube';return excelText(v)}
+function statusName(v){const s=excelText(v).toLowerCase().replace(/[^a-z]/g,'');if(s==='installed')return 'Installed';if(s==='notinstalled')return 'Not Installed';if(s==='removed')return 'Removed';if(s==='damaged')return 'Damaged';return excelText(v)}
+async function parseExcelWorkbook(file){if(file.size>20000000)throw new Error('File is larger than the 20 MB import limit.');const archive=await unzipExcel(await file.arrayBuffer());const wb=xmlDocument(archive,'xl/workbook.xml');const rels=xmlDocument(archive,'xl/_rels/workbook.xml.rels');const relMap=new Map(xmlElements(rels,'Relationship').map(r=>[r.getAttribute('Id'),resolveExcelTarget(r.getAttribute('Target')||'')]));const shared=archive.has('xl/sharedStrings.xml')?xmlElements(xmlDocument(archive,'xl/sharedStrings.xml'),'si').map(si=>xmlElements(si,'t').map(t=>t.textContent||'').join('')):[];const sheetMeta=xmlElements(wb,'sheet').map(sh=>({name:sh.getAttribute('name')||'Sheet',rid:sh.getAttribute('r:id')||sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id')}));if(!sheetMeta.length)throw new Error('No worksheets were found in this Excel file.');let selected=null,rows=null,headerPos=-1;const preferred=sheetMeta.find(s=>s.name.toUpperCase()==='INSULATION_MASTER');const ordered=preferred?[preferred,...sheetMeta.filter(s=>s!==preferred)]:sheetMeta;for(const sh of ordered){const path=relMap.get(sh.rid);if(!path)continue;const candidate=excelSheetRows(xmlDocument(archive,path),shared);const h=findHeaderIndex(candidate);if(h>=0){selected=sh;rows=candidate;headerPos=h;break}}if(!selected)throw new Error('Could not find a header row with EQUIPMENT ID and process description. Use the provided template layout or a compatible .xlsx file.');const headers=rows[headerPos].cells||[];const aliases={equipmentId:['equipmentid'],description:['processdescription'],equipmentType:['equipmenttype'],processTemp:['processtempc','processtemp'],ambientTemp:['ambienttempc','ambienttemp'],operatingDays:['operatingdays'],fuelPrice:['fuelgaspricemmbtu','fuelgasprice'],efficiencyPct:['boilerefficiency','efficiency'],insulationType:['insulationtype'],status:['insulationstatus'],thicknessIn:['insulationthicknessinch','insulationthickness'],surfaceTemp:['outersurfacetempc','outersurfacetemp'],diameterIn:['equipmentdiameterwidthinch','equipmentdiameterwidth'],lengthM:['equipmentlengthheightm','equipmentlengthheight'],depthM:['equipmentdepthm','equipmentdepth'],shape:['equipmentshape'],notes:['notes']};const cols={};for(const [key,alts] of Object.entries(aliases))cols[key]=headers.findIndex(h=>{const n=normalizeHeader(h);return alts.some(a=>n===a||n.startsWith(a))});const required=['equipmentId','description','equipmentType','processTemp','ambientTemp','operatingDays','fuelPrice','efficiencyPct','status','thicknessIn','surfaceTemp','diameterIn','lengthM','shape'];const missing=required.filter(k=>cols[k]<0);if(missing.length)throw new Error(`Required input columns not found: ${missing.join(', ')}. Use the input template columns (equipment ID through equipment shape).`);const hasInputRow=cells=>cells.slice(0,16).some(v=>v!==undefined&&v!==null&&String(v).trim()!=='')||(cols.notes>=0&&cells[cols.notes]!==undefined&&cells[cols.notes]!==null&&String(cells[cols.notes]).trim()!=='');const sourceDataRows=rows.slice(headerPos+1).filter(r=>hasInputRow(r.cells||[]));const rawEfficiencies=sourceDataRows.map(r=>excelNumber((r.cells||[])[cols.efficiencyPct])).filter(v=>v!==null&&v>0);const decimalEfficiencyMode=rawEfficiencies.filter(v=>v<=1).length>rawEfficiencies.filter(v=>v>1).length;const totalRows=[],validItems=[],rejected=[];for(let ix=headerPos+1;ix<rows.length;ix++){const row=rows[ix],cells=row.cells||[];if(!hasInputRow(cells))continue;const at=k=>cols[k]>=0?cells[cols[k]]:null;const num=k=>excelNumber(at(k));let eff=excelNumber(at('efficiencyPct'));if(eff!==null&&eff>0&&(eff<=1||decimalEfficiencyMode))eff*=100;const insRaw=excelText(at('insulationType'));const material=insRaw? (MATERIALS.find(m=>m.toLowerCase()===insRaw.toLowerCase())||insRaw):'None';const item={equipmentId:excelText(at('equipmentId')),description:excelText(at('description')),equipmentType:excelText(at('equipmentType')),shape:shapeName(at('shape')),status:statusName(at('status')),processTemp:num('processTemp'),ambientTemp:num('ambientTemp'),surfaceTemp:num('surfaceTemp'),operatingDays:num('operatingDays'),fuelPrice:num('fuelPrice'),efficiencyPct:eff,insulationType:material,thicknessIn:num('thicknessIn'),diameterIn:num('diameterIn'),lengthM:num('lengthM'),depthM:num('depthM'),notes:cols.notes>=0?excelText(at('notes')):''};if(!item.insulationType&&item.status!=='Installed')item.insulationType='None';const issues=validateItem(item).map(e=>e[1]);const record={row:row.rowNumber,item};totalRows.push(record);if(issues.length)rejected.push({row:row.rowNumber,equipmentId:item.equipmentId||'(no ID)',issues});else validItems.push(record)}return {fileName:file.name,sheetName:selected.name,totalCount:totalRows.length,validItems,rejected,efficiencyEncoding:decimalEfficiencyMode?'decimal fraction ×100':'percentage as entered'}}
+function renderImportPreview(result){pendingImport=result;const preview=$('importPreview');const sample=result.validItems.slice(0,5).map(r=>`<li><strong>${esc(r.item.equipmentId)}</strong> — ${esc(r.item.description)} (${esc(r.item.status)})</li>`).join('');const skipped=result.rejected.slice(0,8).map(r=>`<li>Row ${fmt(r.row,0)} · ${esc(r.equipmentId)}: ${esc(r.issues.join(' '))}</li>`).join('');const more=result.rejected.length>8?`<li>…and ${result.rejected.length-8} more row(s) with issues.</li>`:'';preview.innerHTML=`<h3>Excel import preview</h3><p><strong>${esc(result.fileName)}</strong> · ${fmt(result.totalCount,0)} non-empty row(s): <strong>${fmt(result.validItems.length,0)} ready to import</strong>, ${fmt(result.rejected.length,0)} with input issues. Efficiency column interpreted as ${esc(result.efficiencyEncoding)}.</p><p>Valid rows will be <strong>appended</strong> to the ${fmt(state.items.length,0)} item(s) already in this assessment; nothing will be replaced.</p>${sample?`<p>First imported items:</p><ul class="import-good-list">${sample}</ul>`:''}${skipped||more?`<p><strong>Rows not imported (correct the Excel inputs and re-upload):</strong></p><ul>${skipped}${more}</ul>`:''}<div class="import-preview-actions"><button class="btn btn-primary btn-sm" id="confirmImportBtn" type="button" ${result.validItems.length?'':'disabled'}>Import ${fmt(result.validItems.length,0)} valid item(s)</button><button class="btn btn-outline btn-sm" id="cancelImportBtn" type="button">Cancel</button></div>`;preview.hidden=false;const status=$('importStatus');status.className='import-status';status.textContent=result.validItems.length?`Preview ready. The file is parsed locally in your browser; it has not been uploaded.`:'No valid item rows found. Review the workbook headers and input values.'}
+async function handleExcelFile(file){if(!file)return;const status=$('importStatus');status.className='import-status';status.textContent=`Reading ${file.name} in this browser…`;$('importPreview').hidden=true;pendingImport=null;try{if(!/\.xlsx$/i.test(file.name))throw new Error('Please select an .xlsx Excel workbook.');const result=await parseExcelWorkbook(file);renderImportPreview(result)}catch(err){status.className='import-status error';status.textContent=err?.message||'Could not read this Excel file.';$('importPreview').hidden=true;pendingImport=null}finally{$('excelFileInput').value=''}}
+function commitExcelImport(){if(!pendingImport||!pendingImport.validItems.length)return;const result=pendingImport;const newItems=result.validItems.map(({item})=>({...item,uid:((typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():`item-${Date.now()}-${Math.random().toString(16).slice(2)}`)}));state.items.push(...newItems);saveState();queueHtml();renderPreview();const rejectedCount=result.rejected.length;$('importStatus').className='import-status success';$('importStatus').textContent=`Imported ${newItems.length} valid item(s) from ${result.fileName}.${rejectedCount?` Skipped ${rejectedCount} row(s) with issues; see the list below.`:''}`;if(rejectedCount){const skipped=result.rejected.map(r=>`<li>Row ${fmt(r.row,0)} · ${esc(r.equipmentId)}: ${esc(r.issues.join(' '))}</li>`).join('');$('importPreview').innerHTML=`<h3>Import complete</h3><p>${fmt(newItems.length,0)} valid item(s) were appended. ${fmt(rejectedCount,0)} row(s) were not imported because of input issues:</p><ul>${skipped}</ul>`;$('importPreview').hidden=false}else $('importPreview').hidden=true;pendingImport=null;showToast(`${newItems.length} Excel item(s) added.`);$('queuePanel').scrollIntoView({behavior:'smooth',block:'start'})}
+function initialize(){populateSelects();setSettingsToForm();state.reportMeta=state.reportMeta||{...DEFAULT_REPORT};setReportMetaToForm();state.draft=state.draft||emptyDraft();draftToForm(state.draft);$('addItemBtn').innerHTML=state.editingId?'Save changes':'＋ Add item &amp; add another';$('formHeading').textContent=state.editingId?'Edit equipment item':'Add equipment item';
+ for(const id of Object.keys(DEFAULT_SETTINGS)){$(id).addEventListener('input',()=>{const next=getSettingsFromForm();const errs=validateSettings(next);if(errs.length){$(id).value=state.settings[id];showToast(errs[0]);return}state.settings=next;saveState();renderPreview();queueHtml();if(state.screen==='summary')renderSummary();});}
+ for(const id of INPUT_IDS){$(id).addEventListener('input',()=>{state.draft=readForm();saveState();renderPreview();});$(id).addEventListener('change',()=>{state.draft=readForm();saveState();renderPreview();});}
+ for(const id of REPORT_IDS){$(id).addEventListener('input',()=>{state.reportMeta=readReportMetaFromForm();saveState();renderReportHeader()});$(id).addEventListener('change',()=>{state.reportMeta=readReportMetaFromForm();saveState();renderReportHeader()});}
+ $('addItemBtn').addEventListener('click',saveCurrentItem);$('finishBtn').addEventListener('click',()=>{const d=readForm();if(hasDraft(d)){if(!saveCurrentItem())return}if(!state.items.length){showErrors([['equipmentId','Add at least one complete item before viewing the summary.']]);return}state.editingId=null;state.draft=emptyDraft();saveState();setScreen('summary')});$('clearFormBtn').addEventListener('click',()=>{if(hasDraft(readForm()))askConfirm('Clear current form?','Unsaved form inputs will be cleared. Existing saved assessment items will remain.','Clear form',resetDraft);else resetDraft()});$('addBlankBtn').addEventListener('click',()=>{resetDraft();setScreen('entry');$('equipmentId').focus({preventScroll:true})});$('newAssessmentBtn').addEventListener('click',startNew);$('backToEntryBtn').addEventListener('click',()=>setScreen('entry'));
+  
+  // Interactive Stepper & Navigation
+  if ($('step1')) $('step1').addEventListener('click', () => setScreen('entry'));
+  if ($('step2')) $('step2').addEventListener('click', () => {
+    setScreen('entry');
+    const qp = $('queueHeading');
+    if (qp) qp.scrollIntoView({ behavior: 'smooth' });
+  });
+  if ($('step3')) $('step3').addEventListener('click', () => {
+    if (!state.items.length) {
+      showErrors([['equipmentId', 'Please add at least one complete equipment item before generating the ISO report.']]);
+      setScreen('entry');
+      return;
+    }
+    setScreen('summary');
+  });
+  if ($('queueGenerateBtn')) $('queueGenerateBtn').addEventListener('click', () => {
+    if (!state.items.length) {
+      showErrors([['equipmentId', 'Please add at least one complete equipment item before generating the ISO report.']]);
+      return;
+    }
+    setScreen('summary');
+  });
+  syncSetupAndReportFields();
+
+  if ($('generateIsoReportBtn')) {
+    $('generateIsoReportBtn').addEventListener('click', () => {
+      renderIsoReport();
+      saveState();
+      window.print();
+    });
+  }$('confirmCancelBtn').addEventListener('click',closeConfirm);$('confirmActionBtn').addEventListener('click',completeConfirm);$('confirmModal').addEventListener('click',e=>{if(e.target.hasAttribute('data-confirm-cancel'))closeConfirm()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('confirmModal').hidden)closeConfirm()});
+ $('chooseExcelBtn').addEventListener('click',()=>$('excelFileInput').click());
+  if ($('formImportExcelBtn')) $('formImportExcelBtn').addEventListener('click',()=>$('excelFileInput').click());
+  
+  const dropZone = document.querySelector('.excel-drop-zone');
+  if (dropZone) {
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = '#107c41';
+      dropZone.style.background = '#f0fdf4';
+    });
+    dropZone.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = '#94a3b8';
+      dropZone.style.background = '#ffffff';
+    });
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = '#94a3b8';
+      dropZone.style.background = '#ffffff';
+      const file = e.dataTransfer.files?.[0];
+      if (file) handleExcelFile(file);
+    });
+  }$('excelFileInput').addEventListener('change',e=>handleExcelFile(e.target.files?.[0]));$('importPreview').addEventListener('click',e=>{if(e.target.closest('#confirmImportBtn'))commitExcelImport();if(e.target.closest('#cancelImportBtn')){pendingImport=null;$('importPreview').hidden=true;$('importStatus').className='import-status';$('importStatus').textContent='Import cancelled. No rows were changed.'}});$('queueContent').addEventListener('click',e=>{const edit=e.target.closest('[data-edit]');const del=e.target.closest('[data-delete]');if(edit)startEditing(edit.dataset.edit);if(del)deleteItem(del.dataset.delete)});
+ queueHtml();renderPreview();setScreen(state.screen==='summary'&&state.items.length?'summary':'entry');
+}
+initialize();
+})();
+</script>
+</body>
+</html>
